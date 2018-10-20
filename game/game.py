@@ -31,9 +31,9 @@ screen.fill(WHITE)
 pygame.draw.rect(screen, RED, (text_rect.left - 20, text_rect.top - 20, text_rect.width + 40, text_rect.height + 40))
 
 # get a pixel array of the surface
-pixArray = pygame.PixelArray(screen)
-pixArray[480][380] = BLACK
-del pixArray
+pix_array = pygame.PixelArray(screen)
+pix_array[480][380] = BLACK
+del pix_array
 
 # draw a logo
 logo = pygame.image.load("assets/logo.png")
