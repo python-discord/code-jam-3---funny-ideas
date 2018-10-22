@@ -8,6 +8,6 @@ class Colors:
 
 class Window:
     width = 1280
-    height = 1080
+    height = 800
     depth = 32
     title = "Code Jam III: Funny Ideas"
