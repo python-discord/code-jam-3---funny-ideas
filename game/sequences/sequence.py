@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 
 from game import screen
@@ -13,13 +15,31 @@ class Sequence:
     as the intro splash, and the credits
     sequence.
     """
+
     def __init__(self):
         self.screen = screen
+
+    @staticmethod
+    def _skip_fade(event):
+        """Returns True if the user wants the skip the sequence"""
+        return (
+            event.type == pygame.KEYDOWN
+            and event.key in (
+                pygame.K_ESCAPE,
+                pygame.K_SPACE,
+                pygame.K_RETURN
+            )
+        )
 
     def _fade_image(self, speed, image, reverse):
         """
         Fades in or out with an image in the center of the screen.
         """
+
+        if self.skip and reverse:
+            self.skip = False
+            return
+
         fade = pygame.Surface((Window.width, Window.height))
         fade.fill(Colors.black)
 
@@ -36,6 +56,14 @@ class Sequence:
         alpha_values = reversed(range(0, 255)) if reverse else range(0, 255)
 
         for alpha in alpha_values:
+            # Check for skip and quit events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if self._skip_fade(event):
+                    return False  # This is used to signal that the user wants to skip
+
             fade.set_alpha(alpha)
 
             # Draw the window
@@ -47,9 +75,9 @@ class Sequence:
 
     def fade_in_image(self, speed, image):
         """Fades a centered image in."""
-        self._fade_image(speed, image, reverse=True)
+        return self._fade_image(speed, image, reverse=True)
 
     def fade_out_image(self, speed, image):
         """Fades a centered image out."""
-        self._fade_image(speed, image, reverse=False)
+        return self._fade_image(speed, image, reverse=False)
 

@@ -2,8 +2,7 @@ import pygame
 import sys
 from game.sequences import IntroSplashSequence
 
-iss = IntroSplashSequence()
-iss.run()
+IntroSplashSequence().run()
 
 # run the game loop
 while False:
