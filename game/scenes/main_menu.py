@@ -2,8 +2,8 @@ from pathlib import Path
 
 from game.constants import Window, Colors
 from game.scenes.scene import Scene
-
 from game.objects import BaseObject, FloatingObject
+from game.manager import SceneManager
 
 
 class MainMenu(Scene):
@@ -13,9 +13,9 @@ class MainMenu(Scene):
     The game logo is displayed at the top.
     The user must press a button to start the game.
     """
-    def __init__(self):
+    def __init__(self, manager: SceneManager):
 
-        super().__init__()
+        super().__init__(manager)
         menu_graphics = Path("game", "assets", "graphics", "main_menu")
 
         # Main game logo
