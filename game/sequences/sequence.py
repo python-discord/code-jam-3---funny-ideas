@@ -64,6 +64,7 @@ class Sequence:
                 if self._skip_fade(event):
                     return False  # This is used to signal that the user wants to skip
 
+            self.screen.fill(Colors.black)
             fade.set_alpha(alpha)
 
             # Draw the window
