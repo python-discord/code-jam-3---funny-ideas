@@ -12,5 +12,8 @@ class Scene:
     def __init__(self):
         self.screen = screen
 
+    def handle_events(self):
+        pass
+
     def draw(self):
         pass

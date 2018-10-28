@@ -1,4 +1,4 @@
-from .sequence import Sequence
+from game.sequences.sequence import Sequence
 
 
 class CreditsSequence(Sequence):

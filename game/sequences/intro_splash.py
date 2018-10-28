@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pygame
 
-from game import screen
-from .sequence import Sequence
+from game import screen, Colors
+from game.sequences.sequence import Sequence
 
 
 class IntroSplashSequence(Sequence):
@@ -11,9 +11,13 @@ class IntroSplashSequence(Sequence):
         self.screen = screen
         self.skip = False
 
+        # Logo
         logo_path = Path("game", "assets", "graphics", "logo.png")
         self.logo = pygame.image.load(str(logo_path))
         self.logo = pygame.transform.scale(self.logo, (762, 266))
+
+        # draw the white background onto the surface
+        screen.fill(Colors.black)
 
     def run(self):
         skip = self.fade_in_image(5, self.logo)

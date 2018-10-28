@@ -1,4 +1,4 @@
-from .main_menu import MainMenu
-from .scene import Scene
+from game.scenes.main_menu import MainMenu
+from game.scenes.scene import Scene
 
 __all__ = ["MainMenu", "Scene"]
