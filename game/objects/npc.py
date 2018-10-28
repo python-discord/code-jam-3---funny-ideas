@@ -9,6 +9,8 @@ from game.objects import BaseObject
 
 
 AVATAR_MAX_NUM = 65
+AVATAR_OFFSET_X = 23
+AVATAR_OFFSET_Y = 10
 AVATAR_PATH = Path("game", "assets", "graphics", "avatars")
 AVATAR_SIZE = (64, 64)
 
@@ -37,14 +39,14 @@ class NPC(BaseObject):
 
         size = (
             headless_image.get_width() + 20,
-            avatar_image.get_height() + headless_image.get_height()
+            avatar_image.get_height() + headless_image.get_height() - AVATAR_OFFSET_Y
         )
 
         surface = Surface(size)
         surface.blits(
             (
-                (headless_image, (0, avatar_image.get_height() + 1)),
-                (avatar_image, (23, 11))
+                (headless_image, (0, avatar_image.get_height() - AVATAR_OFFSET_Y)),
+                (avatar_image, (AVATAR_OFFSET_X, 0))
             )
         )
 
