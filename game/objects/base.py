@@ -1,7 +1,5 @@
-from pathlib import Path
-from typing import Tuple, Union
+from typing import Tuple
 
-import pygame
 from pygame.surface import Surface
 
 from game import screen
@@ -9,32 +7,22 @@ from game import screen
 
 class BaseObject:
     """
-    Basic representation of an object on the game screen. Contains sizing information, as well as the location
-    and image path.
+    Basic representation of an object on the game screen.
+    Contains size information, as well as the location
+    and the surface object to draw.
     """
 
-    def __init__(self, location: Tuple[int, int], image: Union[Path, str, Surface], *, size: Tuple[int, int] = None):
+    def __init__(self, location: Tuple[int, int], surface: Surface):
         """
         Construct a new game object.
 
         :param location: The top-left coordinate of the object on the screen
-        :param image: The path to the image that will be displayed on the screen, or a Surface object
-        :param size: Optionally, the size of the object - if provided, will transform the image instead of
-                     assuming the size of the image is correct
+        :param surface: A Surface object that can be blitted to the screen.
         """
 
         self.location = location
-
-        if isinstance(image, Surface):
-            self.image = image
-        else:
-            self.image: Surface = pygame.image.load(str(image))
-
-        self.size = self.image.get_size()
-
-        if size and size != self.size:
-            self.size = size
-            self.image = pygame.transform.smoothscale(self.image, size)
+        self.surface = surface
+        self.size = self.surface.get_size()
 
     def draw(self):
         """
@@ -54,7 +42,7 @@ class BaseObject:
             # No point in drawing it if it isn't visible
             return
 
-        screen.blit(self.image, self.location)
+        screen.blit(self.surface, self.location)
 
     def move(self, horizontal: int = 0, vertical: int = 0):
         """

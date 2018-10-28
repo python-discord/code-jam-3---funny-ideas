@@ -1,8 +1,7 @@
 from pathlib import Path
 
 from game.constants import Colors, Window
-from game.manager import SceneManager
-from game.objects import BaseObject, FloatingObject
+from game.objects import FloatingObject, ImageObject
 from game.scenes.scene import Scene
 
 
@@ -13,13 +12,13 @@ class MainMenu(Scene):
     The game logo is displayed at the top.
     The user must press a button to start the game.
     """
-    def __init__(self, manager: SceneManager):
+    def __init__(self, manager):
 
         super().__init__(manager)
         menu_graphics = Path("game", "assets", "graphics", "main_menu")
 
         # Main game logo
-        self.logo = BaseObject(
+        self.logo = ImageObject(
             (0, 0),
             menu_graphics / "logo.png",
         )
@@ -33,7 +32,7 @@ class MainMenu(Scene):
         self.logo.move_absolute(logo_location)
 
         # Background image
-        self.background = BaseObject(
+        self.background = ImageObject(
             (0, 0),
             menu_graphics / "background.png",
         )

@@ -1,11 +1,10 @@
 from game.constants import Colors
-from game.manager import SceneManager
-from game.scenes import Scene
+from game.scenes.scene import Scene
 
 
 class Game(Scene):
 
-    def __init__(self, manager: SceneManager):
+    def __init__(self, manager):
         super().__init__(manager)
 
     def handle_events(self):

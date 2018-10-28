@@ -1,10 +1,10 @@
 from pathlib import Path
 from typing import Tuple, Union
 
-from game.objects.base import BaseObject
+from game.objects.image import ImageObject
 
 
-class FloatingObject(BaseObject):
+class FloatingObject(ImageObject):
     """
     A BaseObject that floats up and down.
     """

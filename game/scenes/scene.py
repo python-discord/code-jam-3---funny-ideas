@@ -1,5 +1,4 @@
 from game import screen
-from game.manager import SceneManager
 
 
 class Scene:
@@ -10,7 +9,7 @@ class Scene:
     as the credits screen, the settings screen, the
     main menu and the game itself.
     """
-    def __init__(self, manager: SceneManager):
+    def __init__(self, manager):
         self.screen = screen
         self.manager = manager
 

@@ -22,7 +22,7 @@ class TextObject(BaseObject):
 
         surface = FONT.render(self.word, True, FONT_COLOUR)
 
-        super(TextObject, self).__init__(location, surface)
+        super().__init__(location, surface)
 
     def draw(self):
         if not self.typed:
