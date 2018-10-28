@@ -80,4 +80,3 @@ class Sequence:
     def fade_out_image(self, speed, image):
         """Fades a centered image out."""
         return self._fade_image(speed, image, reverse=False)
-

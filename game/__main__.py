@@ -1,5 +1,7 @@
-import pygame
 import sys
+
+import pygame
+
 from game.sequences import IntroSplashSequence
 
 IntroSplashSequence().run()

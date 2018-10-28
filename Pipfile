@@ -4,7 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pygame = "*"
+pygame = "==1.9.4"
+
+[dev-packages]
+"flake8" = "*"
+"flake8-bugbear" = "*"
+"flake8-bandit" = "*"
+"flake8-import-order" = "*"
+"flake8-tidy-imports" = "*"
 
 [requires]
 python_version = "3.7"
+
+[scripts]
+lint = "python -m flake8 ."
+start = "python -m game"
