@@ -11,7 +11,7 @@ class IntroSplashSequence(Sequence):
         self.screen = screen
         self.skip = False
 
-        logo_path = Path("game", "assets", "logo.png")
+        logo_path = Path("game", "assets", "graphics", "logo.png")
         self.logo = pygame.image.load(str(logo_path))
         self.logo = pygame.transform.scale(self.logo, (762, 266))
 
@@ -20,6 +20,3 @@ class IntroSplashSequence(Sequence):
         if skip is not False:
             pygame.time.delay(1000)
             self.fade_out_image(5, self.logo)
-
-
-
