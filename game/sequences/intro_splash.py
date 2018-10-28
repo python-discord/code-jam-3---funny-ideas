@@ -2,7 +2,8 @@ from pathlib import Path
 
 import pygame
 
-from game import screen, Colors
+from game import screen
+from game.constants import Colors
 from game.sequences.sequence import Sequence
 
 

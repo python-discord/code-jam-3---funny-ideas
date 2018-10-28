@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from game.constants import Window, Colors
-from game.scenes.scene import Scene
-from game.objects import BaseObject, FloatingObject
+from game.constants import Colors, Window
 from game.manager import SceneManager
+from game.objects import BaseObject, FloatingObject
+from game.scenes.scene import Scene
 
 
 class MainMenu(Scene):
@@ -63,4 +63,3 @@ class MainMenu(Scene):
         self.logo.draw()
         self.brainmon.draw()
         self.flutterdude.draw()
-

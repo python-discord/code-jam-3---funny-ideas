@@ -74,7 +74,6 @@ class Sequence:
             pygame.display.update()
             pygame.time.delay(speed)
 
-
     def fade_in_image(self, speed, image):
         """Fades a centered image in."""
         return self._fade_image(speed, image, reverse=True)

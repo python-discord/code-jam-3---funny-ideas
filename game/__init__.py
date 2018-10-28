@@ -1,7 +1,7 @@
 import pygame
 from pygame.surface import Surface
 
-from game.constants import Colors, Window
+from game.constants import Window
 
 # set up pygame
 pygame.init()

@@ -2,8 +2,7 @@ import sys
 
 import pygame
 
-from game.scenes import MainMenu
-from game.scenes import Game
+from game.scenes import Game, MainMenu
 
 
 class SceneManager:
