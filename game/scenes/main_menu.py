@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pygame
 
-from .scene import Scene
 from game.constants import Window
+from .scene import Scene
 
 
 class MainMenu(Scene):
@@ -34,4 +34,3 @@ class MainMenu(Scene):
         )
 
         self.screen.blit(self.logo, center)
-

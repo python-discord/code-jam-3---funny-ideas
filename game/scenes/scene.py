@@ -14,4 +14,3 @@ class Scene:
 
     def draw(self):
         pass
-
