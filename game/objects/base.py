@@ -39,10 +39,10 @@ class BaseObject:
         screen_size = screen.get_size()
 
         off_screen = (
-            self.location[0] > screen_size[0] or
-            self.location[0] + self.size[0] < 0 or
-            self.location[1] > screen_size[1] or
-            self.location[1] + self.size[1] < 0
+            self.location[0] > screen_size[0]
+            or self.location[0] + self.size[0] < 0
+            or self.location[1] > screen_size[1]
+            or self.location[1] + self.size[1] < 0
         )
 
         if off_screen:
