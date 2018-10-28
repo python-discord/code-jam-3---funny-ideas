@@ -1,9 +1,9 @@
-import pygame
-
-from pathlib import Path
-from pygame.surface import Surface
 import random
+from pathlib import Path
 from typing import Tuple
+
+import pygame
+from pygame.surface import Surface
 
 from game.objects import BaseObject
 
