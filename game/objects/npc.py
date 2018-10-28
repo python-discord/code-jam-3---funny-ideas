@@ -16,7 +16,18 @@ HEADLESS_PATH = Path("game", "assets", "graphics", "headless1.png")
 
 
 class NPC(BaseObject):
+    """
+    Game object representing an NPC - takes our headless image and slaps an
+    avatar onto it.
+    """
+
     def __init__(self, location: Tuple[int, int]):
+        """
+        Construct a new NPC.
+
+        :param location: The top-left coordinate of the object on the screen.
+        """
+
         avatar_num = random.randint(0, AVATAR_MAX_NUM)
 
         avatar_image: Surface = pygame.image.load(str(Path(AVATAR_PATH, f"{avatar_num}.png")))
