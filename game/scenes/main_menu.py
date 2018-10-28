@@ -1,9 +1,9 @@
 from pathlib import Path
 
-import pygame
+from game.constants import Window, Colors
+from game.scenes.scene import Scene
 
-from game.constants import Window
-from .scene import Scene
+from game.objects import BaseObject, FloatingObject
 
 
 class MainMenu(Scene):
@@ -14,23 +14,53 @@ class MainMenu(Scene):
     The user must press a button to start the game.
     """
     def __init__(self):
+
         super().__init__()
+        menu_graphics = Path("game", "assets", "graphics", "main_menu")
 
         # Main game logo
-        logo_path = Path("game", "assets", "graphics", "megalomaniac_logo.png")
-        self.logo = pygame.image.load(str(logo_path))
-        self.logo = pygame.transform.scale(self.logo, (762, 266))
-
-    def draw(self):
-
-        # Center the image
-        image_width = self.logo.get_rect().width
-        image_height = self.logo.get_rect().height
-
-        # Draw the main game logo
-        center = (
-            (Window.width / 2) - (image_width / 2),
-            (Window.height / 2) - (image_height / 2),
+        self.logo = BaseObject(
+            (0, 0),
+            menu_graphics / "logo.png",
         )
 
-        self.screen.blit(self.logo, center)
+        # Move the logo to the right position, based on screen size.
+        image_width = self.logo.size[0]
+        logo_location = (
+            (Window.width / 2) - (image_width / 2),
+            40,
+        )
+        self.logo.move_absolute(logo_location)
+
+        # Background image
+        self.background = BaseObject(
+            (0, 0),
+            menu_graphics / "background.png",
+        )
+
+        # Flutterdude
+        self.flutterdude = FloatingObject(
+            (980, 260),
+            menu_graphics / "flutterdude.png",
+            float_range=(260, 280),
+            float_speed=4,
+        )
+
+        # Brainmon
+        self.brainmon = FloatingObject(
+            (900, 400),
+            menu_graphics / "brainmon.png",
+            float_range=(390, 400),
+            float_speed=3,
+        )
+
+    def handle_events(self):
+        pass
+
+    def draw(self):
+        self.screen.fill(Colors.black)
+        self.background.draw()
+        self.logo.draw()
+        self.brainmon.draw()
+        self.flutterdude.draw()
+
