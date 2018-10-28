@@ -1,10 +1,10 @@
 import keyword
 import random
 from pathlib import Path
-from pygame.surface import Surface
 from typing import Tuple
 
 from pygame.font import Font
+from pygame.surface import Surface
 
 from game.objects import BaseObject
 
