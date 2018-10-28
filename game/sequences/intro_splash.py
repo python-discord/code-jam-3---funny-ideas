@@ -3,7 +3,7 @@ from pathlib import Path
 import pygame
 
 from game import screen
-from game.sequences import Sequence
+from .sequence import Sequence
 
 
 class IntroSplashSequence(Sequence):
