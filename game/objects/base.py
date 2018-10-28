@@ -13,23 +13,28 @@ class BaseObject:
     and image path.
     """
 
-    def __init__(self, location: Tuple[int, int], image_path: Union[Path, str], *, size: Tuple[int, int] = None):
+    def __init__(self, location: Tuple[int, int], image: Union[Path, str, Surface], *, size: Tuple[int, int] = None):
         """
         Construct a new game object.
 
         :param location: The top-left coordinate of the object on the screen
-        :param image_path: The path to the image that will be displayed on the screen
+        :param image: The path to the image that will be displayed on the screen, or a Surface object
         :param size: Optionally, the size of the object - if provided, will transform the image instead of
                      assuming the size of the image is correct
         """
 
         self.location = location
-        self.image: Surface = pygame.image.load(str(image_path))
+
+        if isinstance(image, Surface):
+            self.image = image
+        else:
+            self.image: Surface = pygame.image.load(str(image))
+
         self.size = self.image.get_size()
 
         if size and size != self.size:
             self.size = size
-            pygame.transform.scale(self.image, size)
+            self.image = pygame.transform.smoothscale(self.image, size)
 
     def draw(self):
         """
