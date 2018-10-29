@@ -1,4 +1,5 @@
 from game import screen
+from game.constants import Colors
 
 
 class Scene:
@@ -18,3 +19,6 @@ class Scene:
 
     def draw(self):
         pass
+
+    def teardown(self):
+        self.screen.fill(Colors.black)

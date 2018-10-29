@@ -31,6 +31,7 @@ class SceneManager:
                       as a snek_case string.
         """
 
+        self.active.teardown()
         new_scene = self.scenes.get(scene)
 
         if new_scene:

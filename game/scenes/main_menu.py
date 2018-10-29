@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pygame
 
-from game.constants import Colors, Window
+from game.constants import Window
 from game.objects import FloatingObject, ImageObject, TextObject
 from game.scenes.scene import Scene
 
@@ -110,8 +110,6 @@ class MainMenu(Scene):
                     item.move(-15, 0)
 
     def draw(self):
-        self.screen.fill(Colors.black)
-
         # Draw the background and the logo
         self.background.draw()
         self.logo.draw()
