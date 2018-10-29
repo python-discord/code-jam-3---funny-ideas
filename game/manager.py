@@ -45,5 +45,6 @@ class SceneManager:
                     pygame.quit()
                     sys.exit()
 
+            self.active.handle_events()
             self.active.draw()
             pygame.display.update()

@@ -1,5 +1,6 @@
 from typing import Tuple
 
+import pygame
 from pygame.surface import Surface
 
 from game import screen
@@ -66,3 +67,20 @@ class BaseObject:
         """
 
         self.location = location
+
+    def mouseover(self) -> bool:
+        """
+        Returns True if the mouse is currently hovering
+        above the location of this object.
+        """
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        x_location, y_location = self.location
+        width, height = self.size
+
+        intersection = (
+            x_location < mouse_x < (x_location + width)
+            and y_location < mouse_y < (y_location + height)
+        )
+        if intersection:
+            return True
+        return False
