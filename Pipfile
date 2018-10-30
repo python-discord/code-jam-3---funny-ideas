@@ -12,6 +12,7 @@ pygame = "==1.9.4"
 "flake8-bandit" = "*"
 "flake8-import-order" = "*"
 "flake8-tidy-imports" = "*"
+nuitka = "*"
 
 [requires]
 python_version = "3.7"
@@ -19,3 +20,4 @@ python_version = "3.7"
 [scripts]
 lint = "python -m flake8 ."
 start = "python -m game"
+build = "python -m nuitka --include-package game --standalone game/__main__.py"
