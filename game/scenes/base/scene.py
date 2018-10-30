@@ -14,7 +14,7 @@ class Scene:
         self.screen = screen
         self.manager = manager
 
-    def handle_events(self):
+    def handle_events(self, event):
         pass
 
     def draw(self):

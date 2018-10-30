@@ -1,8 +1,10 @@
+import inspect
 import sys
 
 import pygame
 
-from game.scenes import Game, MainMenu
+import game.scenes
+import game.scenes.splash_screens
 
 
 class SceneManager:
@@ -13,12 +15,17 @@ class SceneManager:
     """
 
     def __init__(self):
-        self.active = MainMenu(self)  # The currently active Scene
+
+        scenes = []
+        for location in (game.scenes, game.scenes.splash_screens):
+            for scene in inspect.getmembers(location):
+                if not scene[0].startswith("__") and str(scene[1]).startswith("<class"):
+                    scenes.append(scene[1])
 
         self.scenes = {
-            "main_menu": MainMenu,
-            "game": Game,
+            scene.name: scene for scene in scenes
         }
+        self.active = self.scenes.get("pydis")(self)
 
     def change_scene(self, scene: str):
         """
@@ -46,6 +53,7 @@ class SceneManager:
                     pygame.quit()
                     sys.exit()
 
-            self.active.handle_events()
+                self.active.handle_events(event)
+
             self.active.draw()
             pygame.display.update()

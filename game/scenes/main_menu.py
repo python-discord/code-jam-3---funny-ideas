@@ -5,7 +5,7 @@ import pygame
 
 from game.constants import Window
 from game.objects import FloatingObject, ImageObject, TextObject
-from game.scenes.scene import Scene
+from game.scenes.base.scene import Scene
 
 
 class MainMenu(Scene):
@@ -15,6 +15,9 @@ class MainMenu(Scene):
     The game logo is displayed at the top.
     The user must press a button to start the game.
     """
+
+    name = "main_menu"
+
     def __init__(self, manager):
 
         super().__init__(manager)
@@ -84,7 +87,7 @@ class MainMenu(Scene):
             "quit": self.quit_text,
         }
 
-    def handle_events(self):
+    def handle_events(self, event):
         for name, item in self.menu_items.items():
             if item.mouseover():
                 if not item.highlighted:
