@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union
 
 import pygame
 from pygame.surface import Surface
@@ -25,6 +25,26 @@ class BaseObject:
         self.surface = surface
         self.size = self.surface.get_size()
 
+        # If the user has moved less than 1 pixel, we store the amount here
+        self.subpixel_horizontal = 0.0
+        self.subpixel_vertical = 0.0
+
+    def _subpixel_move(self, move, subpixel_count):
+        """
+        Handles subpixel movement speeds for a specific direction.
+        """
+
+        if isinstance(move, float):
+            num, decimals = str(move).split(".")
+            move = int(num)
+            subpixel_count += float(f"0.{decimals}")
+
+            if subpixel_count > 1.0:
+                subpixel_count -= 1.0
+                move += 1
+
+        return move, subpixel_count
+
     def draw(self):
         """
         Draw the game object on the screen by copying its image onto the Surface.
@@ -45,7 +65,7 @@ class BaseObject:
 
         screen.blit(self.surface, self.location)
 
-    def move(self, horizontal: int = 0, vertical: int = 0):
+    def move(self, horizontal: Union[int, float] = 0, vertical: Union[int, float] = 0):
         """
         Move the object, relative to its current position. You can use either a positive or negative value for
         either parameter.
@@ -54,6 +74,11 @@ class BaseObject:
         :param vertical: The distance to move the object on the vertical axis.
         """
 
+        # If the move is less than a pixel, we need special handling.
+        horizontal, self.subpixel_horizontal = self._subpixel_move(horizontal, self.subpixel_horizontal)
+        vertical, self.subpixel_vertical = self._subpixel_move(vertical, self.subpixel_vertical)
+
+        # Now we can actually move.
         self.location = (
             self.location[0] + horizontal,
             self.location[1] + vertical
