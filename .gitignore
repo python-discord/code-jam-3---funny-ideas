@@ -115,3 +115,8 @@ node_modules/
 
 *.js.tmp
 log.*
+
+# Nuitka build files
+*.build/
+*.dist/
+*.7z
