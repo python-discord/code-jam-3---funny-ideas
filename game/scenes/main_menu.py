@@ -84,6 +84,14 @@ class MainMenu(Scene):
             "quit": self.quit_text,
         }
 
+        # SFX
+        self.sound = pygame.mixer.Sound(str(Paths.sfx / "megalomaniac.ogg"))
+        self.sound.play()
+
+        # Music
+        pygame.mixer.music.load(str(Paths.music / "code_jam_loop.ogg"))
+        pygame.mixer.music.play(-1)
+
     def handle_events(self, event):
         for name, item in self.menu_items.items():
             if item.mouseover():
