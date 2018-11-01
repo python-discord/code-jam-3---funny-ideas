@@ -1,16 +1,17 @@
 import keyword
 import random
-from pathlib import Path
 from typing import Tuple
 
 from pygame.font import Font
 from pygame.surface import Surface
 
+from game.constants import Paths
 from game.objects import TextObject
+
 
 FONT_COLOUR = (255, 255, 255)
 FONT_COLOUR_TYPED = (255, 0, 0)
-FONT_PATH = Path("game", "assets", "fonts", "FiraMono-Regular.ttf")
+FONT_PATH = Paths.fonts / "FiraMono-Regular.ttf"
 FONT_SIZE = 32
 FONT = Font(str(FONT_PATH), FONT_SIZE)
 

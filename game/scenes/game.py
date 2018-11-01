@@ -1,7 +1,6 @@
 import random
-from pathlib import Path
 
-from game.constants import Colors
+from game.constants import Colors, Paths
 from game.objects import ImageObject
 from game.scenes.base.scene import Scene
 
@@ -26,7 +25,7 @@ class Game(Scene):
             self.missiles.append(
                 ImageObject(
                     (980, 260),
-                    Path("game", "assets", "graphics", "kickmissile.png"),
+                    Paths.items / "kickmissile.png",
                 )
             )
             self.new_missile_timer = random.randint(300, 700)

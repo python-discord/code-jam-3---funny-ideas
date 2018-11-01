@@ -3,6 +3,7 @@ from typing import Tuple
 
 from pygame.font import Font
 
+from game.constants import Paths
 from game.objects import BaseObject
 
 
@@ -17,7 +18,7 @@ class TextObject(BaseObject):
             font_color: Tuple[int, int, int] = (255, 255, 255),
             highlight_color: Tuple[int, int, int] = (255, 200, 0),
     ):
-        self.font_path = font_path if font_path else Path("game", "assets", "fonts", "FiraMono-Regular.ttf")
+        self.font_path = font_path if font_path else Paths.fonts / "FiraMono-Regular.ttf"
         self.word = word
         self.font = Font(str(self.font_path), font_size)
         self.font_color = font_color

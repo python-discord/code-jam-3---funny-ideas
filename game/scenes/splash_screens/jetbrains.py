@@ -1,6 +1,4 @@
-from pathlib import Path
-
-from game.constants import Window
+from game.constants import Paths, Window
 from game.objects import ImageObject
 from game.scenes.base.splash import Splash
 
@@ -20,7 +18,7 @@ class JetBrainsSplash(Splash):
         # JetBrains logo
         self.image = ImageObject(
             (0, 0),
-            Path("game", "assets", "graphics", "jetbrains_logo.png"),
+            Paths.splash / "jetbrains_logo.png",
         )
 
         # Center the image

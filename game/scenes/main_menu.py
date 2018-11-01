@@ -1,9 +1,8 @@
 import sys
-from pathlib import Path
 
 import pygame
 
-from game.constants import Window
+from game.constants import Paths, Window
 from game.objects import FloatingObject, ImageObject, TextObject
 from game.scenes.base.scene import Scene
 
@@ -21,13 +20,11 @@ class MainMenu(Scene):
     def __init__(self, manager):
 
         super().__init__(manager)
-        menu_graphics = Path("game", "assets", "graphics", "main_menu")
-        fonts = Path("game", "assets", "fonts")
 
         # Main game logo
         self.logo = ImageObject(
             (0, 0),
-            menu_graphics / "logo.png",
+            Paths.main_menu / "logo.png",
         )
 
         # Move the logo to the right position, based on screen size.
@@ -41,20 +38,20 @@ class MainMenu(Scene):
         # Background image
         self.background = ImageObject(
             (0, 0),
-            menu_graphics / "background.png",
+            Paths.main_menu / "background.png",
         )
 
         # Floaty dudes
         self.flutterdude = FloatingObject(
             (980, 260),
-            menu_graphics / "flutterdude.png",
+            Paths.main_menu / "flutterdude.png",
             float_range=(260, 280),
             float_speed=4,
         )
 
         self.brainmon = FloatingObject(
             (900, 400),
-            menu_graphics / "brainmon.png",
+            Paths.main_menu / "brainmon.png",
             float_range=(390, 400),
             float_speed=3,
         )
@@ -63,21 +60,21 @@ class MainMenu(Scene):
         self.start_game_text = TextObject(
             (90, 400),
             "Start game",
-            font_path=fonts / "NANDA.TTF",
+            font_path=Paths.fonts / "NANDA.TTF",
             font_size=60,
         )
 
         self.settings_text = TextObject(
             (90, 480),
             "Settings",
-            font_path=fonts / "NANDA.TTF",
+            font_path=Paths.fonts / "NANDA.TTF",
             font_size=60,
         )
 
         self.quit_text = TextObject(
             (90, 560),
             "Quit game",
-            font_path=fonts / "NANDA.TTF",
+            font_path=Paths.fonts / "NANDA.TTF",
             font_size=60,
         )
 
