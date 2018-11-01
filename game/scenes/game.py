@@ -1,3 +1,4 @@
+import pygame
 import random
 
 from game.constants import Colors, Paths
@@ -16,11 +17,21 @@ class Game(Scene):
         self.texts = []
         self.new_missile_timer = 0
 
+        # Background image
+        self.background = ImageObject(
+            (0, 0),
+            Paths.levels / "level_bg.png",
+        )
+
+        # Music
+        pygame.mixer.music.load(str(Paths.music / "pskov_loop.ogg"))
+        pygame.mixer.music.play(-1)
+
     def handle_events(self, event):
         pass
 
     def draw(self):
-        self.screen.fill(Colors.black)
+        self.background.draw()
 
         if self.new_missile_timer == 0:
             new_missile = ImageObject(
