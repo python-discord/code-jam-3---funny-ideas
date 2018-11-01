@@ -8,7 +8,7 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from game.constants import Paths
-from game.objects import BaseObject, TextObject
+from game.objects import GraphicalObject, TextObject
 
 BACKGROUND_COLOUR = (125, 125, 125, 0.5)
 
@@ -20,7 +20,7 @@ FONT = Font(str(FONT_PATH), FONT_SIZE)
 
 
 class TextShootObject(TextObject):
-    def __init__(self, location: Tuple[int, int], parent: BaseObject = None):
+    def __init__(self, location: Tuple[int, int], parent: GraphicalObject = None):
         self.word = random.choice(keyword.kwlist).upper()
         self.typed = random.randint(0, len(self.word))
 
