@@ -41,7 +41,3 @@ class JetBrainsSplash(Splash):
         # JetBrains SFX
         self.sound = pygame.mixer.Sound(str(Paths.sfx / "jetbrains.ogg"))
         self.sound.play()
-
-    def teardown(self):
-        super().teardown()
-        self.sound.stop()

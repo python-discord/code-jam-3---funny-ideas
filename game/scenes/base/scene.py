@@ -1,3 +1,5 @@
+import pygame
+
 from game import screen
 from game.constants import Colors
 
@@ -13,6 +15,7 @@ class Scene:
     def __init__(self, manager):
         self.screen = screen
         self.manager = manager
+        self.sound = None
 
     def handle_events(self, event):
         pass
@@ -22,3 +25,8 @@ class Scene:
 
     def teardown(self):
         self.screen.fill(Colors.black)
+
+        if self.sound:
+            self.sound.stop()
+
+        pygame.mixer.music.stop()

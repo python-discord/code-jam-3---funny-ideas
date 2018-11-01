@@ -41,7 +41,3 @@ class PyDisSplash(Splash):
         # PyDis SFX
         self.sound = pygame.mixer.Sound(str(Paths.sfx / "pydis_desu.ogg"))
         self.sound.play()
-
-    def teardown(self):
-        super().teardown()
-        self.sound.stop()
