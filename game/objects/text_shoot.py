@@ -1,11 +1,11 @@
-import pygame
-
 import keyword
 import random
+from typing import Tuple
+
+import pygame
 from pygame.font import Font
 from pygame.rect import Rect
 from pygame.surface import Surface
-from typing import Tuple
 
 from game.constants import Paths
 from game.objects import BaseObject, TextObject
