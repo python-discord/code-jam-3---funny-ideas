@@ -1,7 +1,7 @@
 import random
 
 from game.constants import Colors, Paths
-from game.objects import ImageObject
+from game.objects import ImageObject, TextShootObject
 from game.scenes.base.scene import Scene
 
 
@@ -13,6 +13,7 @@ class Game(Scene):
         super().__init__(manager)
 
         self.missiles = []
+        self.texts = []
         self.new_missile_timer = 0
 
     def handle_events(self, event):
@@ -22,17 +23,23 @@ class Game(Scene):
         self.screen.fill(Colors.black)
 
         if self.new_missile_timer == 0:
-            self.missiles.append(
-                ImageObject(
-                    (980, 260),
-                    Paths.items / "kickmissile.png",
-                )
+            new_missile = ImageObject(
+                (980, 260),
+                Paths.items / "kickmissile.png",
             )
-            self.new_missile_timer = random.randint(300, 700)
+
+            self.missiles.append(new_missile)
+            self.texts.append(
+                TextShootObject((0, 0), new_missile)
+            )
+
+            self.new_missile_timer = 1500
         else:
             self.new_missile_timer -= 1
 
         for missile in self.missiles:
             y_direction = random.choice([-1, 1])
-            missile.draw()
-            missile.move(0.1 * y_direction, 0.1 * y_direction)
+            missile.move(0.1 * y_direction, 0.1)
+
+        for text in self.texts:
+            text.draw()

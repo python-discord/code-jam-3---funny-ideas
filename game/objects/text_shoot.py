@@ -1,13 +1,14 @@
+import pygame
+
 import keyword
 import random
+from pygame.font import Font
+from pygame.rect import Rect
+from pygame.surface import Surface
 from typing import Tuple
 
-from pygame.font import Font
-from pygame.surface import Surface
-
 from game.constants import Paths
-from game.objects import TextObject
-
+from game.objects import BaseObject, TextObject
 
 FONT_COLOUR = (255, 255, 255)
 FONT_COLOUR_TYPED = (255, 0, 0)
@@ -17,7 +18,7 @@ FONT = Font(str(FONT_PATH), FONT_SIZE)
 
 
 class TextShootObject(TextObject):
-    def __init__(self, location: Tuple[int, int]):
+    def __init__(self, location: Tuple[int, int], parent: BaseObject = None):
         self.word = random.choice(keyword.kwlist).upper()
         self.typed = random.randint(0, len(self.word))
 
@@ -29,22 +30,24 @@ class TextShootObject(TextObject):
             font_color=FONT_COLOUR
         )
 
+        self.parent = parent
+
     def draw(self):
         if not self.typed:
-            self.surface = FONT.render(self.word, True, FONT_COLOUR)
+            self.surface = FONT.render(self.word, True, FONT_COLOUR, (125, 125, 125, 0.5))
         elif self.typed >= len(self.word):
-            self.surface = FONT.render(self.word, True, FONT_COLOUR_TYPED)
+            self.surface = FONT.render(self.word, True, FONT_COLOUR_TYPED, (125, 125, 125, 0.5))
         else:
             typed_text = self.word[:self.typed]
             untyped_text = self.word[self.typed:]
 
-            typed_surface: Surface = FONT.render(typed_text, True, FONT_COLOUR_TYPED)
-            untyped_surface: Surface = FONT.render(untyped_text, True, FONT_COLOUR)
+            typed_surface: Surface = FONT.render(typed_text, True, FONT_COLOUR_TYPED, (125, 125, 125, 0.5))
+            untyped_surface: Surface = FONT.render(untyped_text, True, FONT_COLOUR, (125, 125, 125, 0.5))
 
             self.surface = Surface(
                 (
                     typed_surface.get_width() + untyped_surface.get_width(),
-                    typed_surface.get_height() + untyped_surface.get_height()
+                    max(typed_surface.get_height(), untyped_surface.get_height())
                 )
             )
 
@@ -55,4 +58,27 @@ class TextShootObject(TextObject):
                 )
             )
 
+        surface = Surface((
+            self.surface.get_width() + 20,
+            self.surface.get_height()
+        ))
+
+        pygame.draw.ellipse(surface, (125, 125, 125, 0.5), Rect(0, 0, 20, surface.get_height()))
+        pygame.draw.ellipse(surface, (125, 125, 125, 0.5),
+                            Rect(surface.get_width() - 20, 0, 20, surface.get_height()))
+
+        surface.blit(self.surface, (10, 0))
+        self.surface = surface
+
+        if self.parent:
+            half_width = self.surface.get_width() / 2
+
+            self.location = (
+                self.parent.location[0] - half_width + self.parent.surface.get_width() / 2,
+                self.parent.location[1] - 40
+            )
+
         super(TextObject, self).draw()
+
+        if self.parent:
+            self.parent.draw()
