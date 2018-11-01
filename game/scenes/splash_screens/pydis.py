@@ -1,3 +1,5 @@
+import pygame
+
 from game.constants import Paths, Window
 from game.objects import ImageObject
 from game.scenes.base.splash import Splash
@@ -35,3 +37,7 @@ class PyDisSplash(Splash):
 
         # What scene should be loaded after this finishes?
         self.next_scene = "jetbrains"
+
+        # PyDis SFX
+        sound = pygame.mixer.Sound(str(Paths.sfx / "pydis_desu.ogg"))
+        sound.play()

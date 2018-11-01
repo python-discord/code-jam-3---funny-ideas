@@ -1,3 +1,5 @@
+import pygame
+
 from game.constants import Paths, Window
 from game.objects import ImageObject
 from game.scenes.base.splash import Splash
@@ -35,3 +37,7 @@ class JetBrainsSplash(Splash):
 
         # What scene should be loaded after this finishes?
         self.next_scene = "main_menu"
+
+        # JetBrains SFX
+        sound = pygame.mixer.Sound(str(Paths.sfx / "jetbrains.ogg"))
+        sound.play()

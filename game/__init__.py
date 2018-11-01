@@ -4,6 +4,7 @@ from pygame.surface import Surface
 from game.constants import Colors, Window
 
 # set up pygame
+pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 
 # set up the window

@@ -4,10 +4,10 @@ from typing import Tuple
 from pygame.font import Font
 
 from game.constants import Paths
-from game.objects import BaseObject
+from game.objects import GraphicalObject
 
 
-class TextObject(BaseObject):
+class TextObject(GraphicalObject):
     def __init__(
             self,
             location: Tuple[int, int],

@@ -4,10 +4,10 @@ from typing import Tuple, Union
 import pygame
 from pygame.surface import Surface
 
-from game.objects.base import BaseObject
+from game.objects.graphical import GraphicalObject
 
 
-class ImageObject(BaseObject):
+class ImageObject(GraphicalObject):
     """
     Basic representation of a sprite on the game screen.
     Constructs a BaseObject with an image

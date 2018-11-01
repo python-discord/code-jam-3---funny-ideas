@@ -5,7 +5,7 @@ import pygame
 from pygame.surface import Surface
 
 from game.constants import Paths
-from game.objects import BaseObject
+from game.objects import GraphicalObject
 
 
 AVATAR_MAX_NUM = 65
@@ -14,7 +14,7 @@ AVATAR_OFFSET_Y = 10
 AVATAR_SIZE = (64, 64)
 
 
-class NPC(BaseObject):
+class NPC(GraphicalObject):
     """
     Game object representing an NPC - takes our headless image and slaps an
     avatar onto it.
