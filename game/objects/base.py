@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Tuple, Union
 
 import pygame
@@ -9,27 +8,42 @@ from game import screen
 
 class BaseObject:
     """
-    Basic representation of an object on the game screen. Contains sizing information, as well as the location
-    and image path.
+    Basic representation of an object on the game screen.
+    Contains size information, as well as the location
+    and the surface object to draw.
     """
 
-    def __init__(self, location: Tuple[int, int], image_path: Union[Path, str], *, size: Tuple[int, int] = None):
+    def __init__(self, location: Tuple[int, int], surface: Surface):
         """
         Construct a new game object.
 
         :param location: The top-left coordinate of the object on the screen
-        :param image_path: The path to the image that will be displayed on the screen
-        :param size: Optionally, the size of the object - if provided, will transform the image instead of
-                     assuming the size of the image is correct
+        :param surface: A Surface object that can be blitted to the screen.
         """
 
         self.location = location
-        self.image: Surface = pygame.image.load(str(image_path))
-        self.size = self.image.get_size()
+        self.surface = surface
+        self.size = self.surface.get_size()
 
-        if size and size != self.size:
-            self.size = size
-            pygame.transform.scale(self.image, size)
+        # If the user has moved less than 1 pixel, we store the amount here
+        self.subpixel_horizontal = 0.0
+        self.subpixel_vertical = 0.0
+
+    def _subpixel_move(self, move, subpixel_count):
+        """
+        Handles subpixel movement speeds for a specific direction.
+        """
+
+        if isinstance(move, float):
+            num, decimals = str(move).split(".")
+            move = int(num)
+            subpixel_count += float(f"0.{decimals}")
+
+            if subpixel_count > 1.0:
+                subpixel_count -= 1.0
+                move += 1
+
+        return move, subpixel_count
 
     def draw(self):
         """
@@ -49,9 +63,9 @@ class BaseObject:
             # No point in drawing it if it isn't visible
             return
 
-        screen.blit(self.image, self.location)
+        screen.blit(self.surface, self.location)
 
-    def move(self, horizontal: int = 0, vertical: int = 0):
+    def move(self, horizontal: Union[int, float] = 0, vertical: Union[int, float] = 0):
         """
         Move the object, relative to its current position. You can use either a positive or negative value for
         either parameter.
@@ -60,6 +74,11 @@ class BaseObject:
         :param vertical: The distance to move the object on the vertical axis.
         """
 
+        # If the move is less than a pixel, we need special handling.
+        horizontal, self.subpixel_horizontal = self._subpixel_move(horizontal, self.subpixel_horizontal)
+        vertical, self.subpixel_vertical = self._subpixel_move(vertical, self.subpixel_vertical)
+
+        # Now we can actually move.
         self.location = (
             self.location[0] + horizontal,
             self.location[1] + vertical
@@ -73,3 +92,20 @@ class BaseObject:
         """
 
         self.location = location
+
+    def mouseover(self) -> bool:
+        """
+        Returns True if the mouse is currently hovering
+        above the location of this object.
+        """
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        x_location, y_location = self.location
+        width, height = self.size
+
+        intersection = (
+            x_location < mouse_x < (x_location + width)
+            and y_location < mouse_y < (y_location + height)
+        )
+        if intersection:
+            return True
+        return False
