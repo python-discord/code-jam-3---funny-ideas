@@ -44,14 +44,14 @@ class MainMenu(Scene):
         # Floaty dudes
         self.flutterdude = FloatingObject(
             (980, 260),
-            Paths.main_menu / "flutterdude.png",
+            Paths.enemies / "flutterdude.png",
             float_range=(260, 280),
             float_speed=4,
         )
 
         self.brainmon = FloatingObject(
             (900, 400),
-            Paths.main_menu / "brainmon.png",
+            Paths.enemies / "brainmon_firing.png",
             float_range=(390, 400),
             float_speed=3,
         )
