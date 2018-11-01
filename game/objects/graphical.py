@@ -36,12 +36,22 @@ class GraphicalObject:
 
         if isinstance(move, float):
             num, decimals = str(move).split(".")
-            move = int(num)
-            subpixel_count += float(f"0.{decimals}")
+            _move = int(num)
+
+            if move >= 0:
+                subpixel_count += float(f"0.{decimals}")
+            else:
+                subpixel_count -= float(f"-0.{decimals}")
 
             if subpixel_count > 1.0:
                 subpixel_count -= 1.0
-                move += 1
+
+                if move > 0:
+                    _move += 1
+                elif move < 0:
+                    _move -= 1
+
+            move = _move
 
         return move, subpixel_count
 
