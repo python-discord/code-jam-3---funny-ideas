@@ -33,6 +33,7 @@ class Paths(NamedTuple):
 
     # Graphics subfolders
     avatars = graphics / "avatars"
+    effects = graphics / "effects"
     enemies = graphics / "enemies"
     headless = graphics / "headless"
     items = graphics / "items"
