@@ -10,6 +10,8 @@ from pygame.surface import Surface
 from game.constants import Paths
 from game.objects import BaseObject, TextObject
 
+BACKGROUND_COLOUR = (125, 125, 125, 0.5)
+
 FONT_COLOUR = (255, 255, 255)
 FONT_COLOUR_TYPED = (255, 0, 0)
 FONT_PATH = Paths.fonts / "FiraMono-Regular.ttf"
@@ -34,15 +36,15 @@ class TextShootObject(TextObject):
 
     def draw(self):
         if not self.typed:
-            self.surface = FONT.render(self.word, True, FONT_COLOUR, (125, 125, 125, 0.5))
+            self.surface = FONT.render(self.word, True, FONT_COLOUR, BACKGROUND_COLOUR)
         elif self.typed >= len(self.word):
-            self.surface = FONT.render(self.word, True, FONT_COLOUR_TYPED, (125, 125, 125, 0.5))
+            self.surface = FONT.render(self.word, True, FONT_COLOUR_TYPED, BACKGROUND_COLOUR)
         else:
             typed_text = self.word[:self.typed]
             untyped_text = self.word[self.typed:]
 
-            typed_surface: Surface = FONT.render(typed_text, True, FONT_COLOUR_TYPED, (125, 125, 125, 0.5))
-            untyped_surface: Surface = FONT.render(untyped_text, True, FONT_COLOUR, (125, 125, 125, 0.5))
+            typed_surface: Surface = FONT.render(typed_text, True, FONT_COLOUR_TYPED, BACKGROUND_COLOUR)
+            untyped_surface: Surface = FONT.render(untyped_text, True, FONT_COLOUR, BACKGROUND_COLOUR)
 
             self.surface = Surface(
                 (
@@ -63,9 +65,14 @@ class TextShootObject(TextObject):
             self.surface.get_height()
         ))
 
-        pygame.draw.ellipse(surface, (125, 125, 125, 0.5), Rect(0, 0, 20, surface.get_height()))
-        pygame.draw.ellipse(surface, (125, 125, 125, 0.5),
-                            Rect(surface.get_width() - 20, 0, 20, surface.get_height()))
+        pygame.draw.ellipse(
+            surface, BACKGROUND_COLOUR,
+            Rect(0, 0, 20, surface.get_height())
+        )
+        pygame.draw.ellipse(
+            surface, BACKGROUND_COLOUR,
+            Rect(surface.get_width() - 20, 0, 20, surface.get_height())
+        )
 
         surface.blit(self.surface, (10, 0))
         self.surface = surface
