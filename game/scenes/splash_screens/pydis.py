@@ -39,5 +39,9 @@ class PyDisSplash(Splash):
         self.next_scene = "jetbrains"
 
         # PyDis SFX
-        sound = pygame.mixer.Sound(str(Paths.sfx / "pydis_desu.ogg"))
-        sound.play()
+        self.sound = pygame.mixer.Sound(str(Paths.sfx / "pydis_desu.ogg"))
+        self.sound.play()
+
+    def teardown(self):
+        super().teardown()
+        self.sound.stop()
