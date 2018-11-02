@@ -1,7 +1,8 @@
-import pygame
 import random
 
-from game.constants import Colors, Paths
+import pygame
+
+from game.constants import Paths
 from game.objects import ImageObject, TextShootObject
 from game.scenes.base.scene import Scene
 
