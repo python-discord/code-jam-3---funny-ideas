@@ -4,6 +4,7 @@ import pygame
 
 from game.constants import Paths
 from game.objects import ImageObject, TextShootObject
+from game.objects.bomb import BombObject
 from game.objects.text_shoot import TextShootState
 from game.scenes.base.scene import Scene
 
@@ -66,9 +67,9 @@ class Game(Scene):
         self.background.draw()
 
         if self.new_missile_timer == 0:
-            new_missile = ImageObject(
-                (980, 260),
-                Paths.items / "kickmissile.png",
+            new_missile = BombObject(
+                (random.randint(0, self.screen.get_width()), 260),
+                random.choice([0.1, 0.2, 0.3, 0.4])
             )
 
             self.missiles.append(new_missile)
@@ -79,10 +80,6 @@ class Game(Scene):
             self.new_missile_timer = 200
         else:
             self.new_missile_timer -= 1
-
-        for missile in self.missiles:
-            y_direction = random.choice([-1, 1])
-            missile.move(0.1 * y_direction, 0.1)
 
         for text in self.texts:
             text.draw()
