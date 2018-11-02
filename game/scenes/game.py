@@ -22,9 +22,11 @@ class Game(Scene):
         self.lock = None
 
         # Background image
+
+        background_path = Paths.levels / random.choice(["level_bg.png", "level_bg_2.png"])
+
         self.background = ImageObject(
-            (0, 0),
-            Paths.levels / "level_bg.png",
+            (0, 0), background_path,
         )
 
         # Music
