@@ -4,10 +4,11 @@ from typing import NamedTuple
 
 class Colors(NamedTuple):
     black = (0, 0, 0)
-    white = (255, 255, 255)
-    red = (255, 0, 0)
-    green = (0, 255, 0)
     blue = (0, 0, 255)
+    blurple = (114, 137, 218)
+    green = (0, 255, 0)
+    red = (255, 0, 0)
+    white = (255, 255, 255)
 
 
 class Window(NamedTuple):
@@ -40,9 +41,3 @@ class Paths(NamedTuple):
     levels = graphics / "levels"
     main_menu = graphics / "main_menu"
     splash = graphics / "splash"
-
-
-class Colours(NamedTuple):
-    blurple = (114, 137, 218)
-    red = (255, 0, 0)
-    white = (255, 255, 255)

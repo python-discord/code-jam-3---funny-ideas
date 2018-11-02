@@ -9,7 +9,7 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from game import screen
-from game.constants import Colours, Paths
+from game.constants import Colors, Paths
 from game.objects import GraphicalObject, TextObject
 
 FONT_PATH = Paths.fonts / "FiraMono-Regular.ttf"
@@ -33,7 +33,7 @@ class TextShootObject(TextObject):
             self.word,
             font_path=FONT_PATH,
             font_size=FONT_SIZE,
-            font_color=Colours.white
+            font_color=Colors.white
         )
 
         self.parent = parent
@@ -50,15 +50,15 @@ class TextShootObject(TextObject):
 
     def draw(self):
         if not self.typed:
-            self.surface = FONT.render(self.word, True, Colours.white, Colours.blurple)
+            self.surface = FONT.render(self.word, True, Colors.white, Colors.blurple)
         elif self.typed >= len(self.word):
-            self.surface = FONT.render(self.word, True, Colours.red, Colours.blurple)
+            self.surface = FONT.render(self.word, True, Colors.red, Colors.blurple)
         else:
             typed_text = self.word[:self.typed]
             untyped_text = self.word[self.typed:]
 
-            typed_surface: Surface = FONT.render(typed_text, True, Colours.red, Colours.blurple)
-            untyped_surface: Surface = FONT.render(untyped_text, True, Colours.white, Colours.blurple)
+            typed_surface: Surface = FONT.render(typed_text, True, Colors.red, Colors.blurple)
+            untyped_surface: Surface = FONT.render(untyped_text, True, Colors.white, Colors.blurple)
 
             self.surface = Surface(
                 (
@@ -82,11 +82,11 @@ class TextShootObject(TextObject):
         surface.set_colorkey((0, 0, 0))
 
         pygame.draw.ellipse(
-            surface, Colours.blurple,
+            surface, Colors.blurple,
             Rect(0, 0, 20, surface.get_height())
         )
         pygame.draw.ellipse(
-            surface, Colours.blurple,
+            surface, Colors.blurple,
             Rect(surface.get_width() - 20, 0, 20, surface.get_height())
         )
 
