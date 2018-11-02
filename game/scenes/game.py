@@ -2,9 +2,9 @@ import random
 
 import pygame
 
+from game.constants import Colors, Paths
+from game.objects import ImageObject, TextObject, TextShootObject
 from game.objects.bomb import BombObject
-from game.constants import Paths, Colors
-from game.objects import ImageObject, TextShootObject, TextObject
 from game.objects.text_shoot import TextShootState
 from game.scenes.base.scene import Scene
 
