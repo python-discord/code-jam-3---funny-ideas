@@ -68,7 +68,7 @@ class Game(Scene):
                 elif result == TextShootState.WRONG_KEY:
                     self.wrong.play()
 
-    def draw_timer(self):
+    def draw_timer(self, location, font_name, color):
         """
         Build and draw a timer.
         """
@@ -84,15 +84,19 @@ class Game(Scene):
 
         # Make the timer object
         TextObject(
-            (500, 200),
+            location,
             time_display,
-            font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf",
-            font_color=Colors.blurple
+            font_path=Paths.fonts / font_name,
+            font_color=color
         ).draw()
 
     def draw(self):
         self.background.draw()
-        self.draw_timer()
+        self.draw_timer(
+            (1080, 20),
+            "ObelixPro-Cry-cyr.ttf",
+            Colors.white
+        )
 
         if self.new_missile_timer == 0:
             new_missile = BombObject(
