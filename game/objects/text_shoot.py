@@ -8,6 +8,7 @@ from pygame.font import Font
 from pygame.rect import Rect
 from pygame.surface import Surface
 
+from game import screen
 from game.constants import Colours, Paths
 from game.objects import GraphicalObject, TextObject
 
@@ -98,6 +99,28 @@ class TextShootObject(TextObject):
             self.location = (
                 self.parent.location[0] - half_width + self.parent.surface.get_width() / 2,
                 self.parent.location[1] - 40
+            )
+
+        if self.location[0] <= 0:
+            self.location = (
+                1,
+                self.location[1]
+            )
+
+            self.parent.location = (
+                (self.surface.get_width() / 2) + 1,
+                self.parent.location[1]
+            )
+
+        elif self.location[0] + self.surface.get_width() >= screen.get_width():
+            self.location = (
+                screen.get_width() - self.surface.get_width() - 1,
+                self.location[1]
+            )
+
+            self.parent.location = (
+                (screen.get_width() - self.surface.get_width() / 2) - 1,
+                self.parent.location[1]
             )
 
         super(TextObject, self).draw()
