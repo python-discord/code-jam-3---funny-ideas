@@ -7,13 +7,9 @@ from pygame.font import Font
 from pygame.rect import Rect
 from pygame.surface import Surface
 
-from game.constants import Paths
+from game.constants import Paths, Colours
 from game.objects import GraphicalObject, TextObject
 
-BACKGROUND_COLOUR = (125, 125, 125, 0.5)
-
-FONT_COLOUR = (255, 255, 255)
-FONT_COLOUR_TYPED = (255, 0, 0)
 FONT_PATH = Paths.fonts / "FiraMono-Regular.ttf"
 FONT_SIZE = 32
 FONT = Font(str(FONT_PATH), FONT_SIZE)
@@ -29,22 +25,22 @@ class TextShootObject(TextObject):
             self.word,
             font_path=FONT_PATH,
             font_size=FONT_SIZE,
-            font_color=FONT_COLOUR
+            font_color=Colours.white
         )
 
         self.parent = parent
 
     def draw(self):
         if not self.typed:
-            self.surface = FONT.render(self.word, True, FONT_COLOUR, BACKGROUND_COLOUR)
+            self.surface = FONT.render(self.word, True, Colours.white, Colours.blurple)
         elif self.typed >= len(self.word):
-            self.surface = FONT.render(self.word, True, FONT_COLOUR_TYPED, BACKGROUND_COLOUR)
+            self.surface = FONT.render(self.word, True, Colours.red, Colours.blurple)
         else:
             typed_text = self.word[:self.typed]
             untyped_text = self.word[self.typed:]
 
-            typed_surface: Surface = FONT.render(typed_text, True, FONT_COLOUR_TYPED, BACKGROUND_COLOUR)
-            untyped_surface: Surface = FONT.render(untyped_text, True, FONT_COLOUR, BACKGROUND_COLOUR)
+            typed_surface: Surface = FONT.render(typed_text, True, Colours.red, Colours.blurple)
+            untyped_surface: Surface = FONT.render(untyped_text, True, Colours.white, Colours.blurple)
 
             self.surface = Surface(
                 (
@@ -68,11 +64,11 @@ class TextShootObject(TextObject):
         surface.set_colorkey((0, 0, 0))
 
         pygame.draw.ellipse(
-            surface, BACKGROUND_COLOUR,
+            surface, Colours.blurple,
             Rect(0, 0, 20, surface.get_height())
         )
         pygame.draw.ellipse(
-            surface, BACKGROUND_COLOUR,
+            surface, Colours.blurple,
             Rect(surface.get_width() - 20, 0, 20, surface.get_height())
         )
 
