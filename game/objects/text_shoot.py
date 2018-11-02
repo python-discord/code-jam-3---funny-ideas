@@ -1,5 +1,6 @@
 import keyword
 import random
+from enum import Enum
 from typing import Tuple
 
 import pygame
@@ -19,10 +20,16 @@ FONT_SIZE = 32
 FONT = Font(str(FONT_PATH), FONT_SIZE)
 
 
+class TextShootState(Enum):
+    SUCCESS = 1
+    WORD_END = 2
+    WRONG_KEY = 3
+
+
 class TextShootObject(TextObject):
     def __init__(self, location: Tuple[int, int], parent: GraphicalObject = None):
         self.word = random.choice(keyword.kwlist).upper()
-        self.typed = random.randint(0, len(self.word))
+        self.typed = 0
 
         super().__init__(
             location,
@@ -33,6 +40,16 @@ class TextShootObject(TextObject):
         )
 
         self.parent = parent
+
+    def key_input(self, key):
+        key_name = pygame.key.name(key)
+
+        if self.word[self.typed].lower() == key_name:
+            if self.typed == len(self.word) - 1:
+                return TextShootState.WORD_END
+            self.typed += 1
+            return TextShootState.SUCCESS
+        return TextShootState.WRONG_KEY
 
     def draw(self):
         if not self.typed:

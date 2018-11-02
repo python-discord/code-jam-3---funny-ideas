@@ -4,6 +4,7 @@ import pygame
 
 from game.constants import Paths
 from game.objects import ImageObject, TextShootObject
+from game.objects.text_shoot import TextShootState
 from game.scenes.base.scene import Scene
 
 
@@ -16,7 +17,8 @@ class Game(Scene):
 
         self.missiles = []
         self.texts = []
-        self.new_missile_timer = 0
+        self.new_missile_timer = 1
+        self.lock = None
 
         # Background image
         self.background = ImageObject(
@@ -28,8 +30,36 @@ class Game(Scene):
         pygame.mixer.music.load(str(Paths.music / "pskov_loop.ogg"))
         pygame.mixer.music.play(-1)
 
+        # SFX
+        self.gunshot = pygame.mixer.Sound(str(Paths.sfx / "gunshot.ogg"))
+        self.wrong = pygame.mixer.Sound(str(Paths.sfx / "wrong_letter.ogg"))
+
     def handle_events(self, event):
-        pass
+        if event.type == pygame.KEYDOWN:
+            if not self.lock:
+                for text in self.texts:
+                    result = text.key_input(event.key)
+
+                    # If the user hit the right key, lock the word
+                    if result == TextShootState.SUCCESS:
+                        self.gunshot.play()
+                        self.lock = text
+                    elif result == TextShootState.WRONG_KEY:
+                        self.wrong.play()
+                    elif result == TextShootState.WORD_END:
+                        self.gunshot.play()
+                        self.lock = None
+
+            else:
+                result = self.lock.key_input(event.key)
+                if result == TextShootState.SUCCESS:
+                    self.gunshot.play()
+                elif result == TextShootState.WORD_END:
+                    self.gunshot.play()
+                    self.texts.remove(self.lock)
+                    self.lock = None
+                elif result == TextShootState.WRONG_KEY:
+                    self.wrong.play()
 
     def draw(self):
         self.background.draw()
@@ -45,7 +75,7 @@ class Game(Scene):
                 TextShootObject((0, 0), new_missile)
             )
 
-            self.new_missile_timer = 1500
+            self.new_missile_timer = 200
         else:
             self.new_missile_timer -= 1
 
