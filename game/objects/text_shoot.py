@@ -8,7 +8,7 @@ from pygame.font import Font
 from pygame.rect import Rect
 from pygame.surface import Surface
 
-from game.constants import Paths, Colours
+from game.constants import Colours, Paths
 from game.objects import GraphicalObject, TextObject
 
 FONT_PATH = Paths.fonts / "FiraMono-Regular.ttf"
