@@ -40,3 +40,9 @@ class Paths(NamedTuple):
     levels = graphics / "levels"
     main_menu = graphics / "main_menu"
     splash = graphics / "splash"
+
+
+class Colours(NamedTuple):
+    blurple = (114, 137, 218)
+    red = (255, 0, 0)
+    white = (255, 255, 255)
