@@ -2,9 +2,9 @@ import random
 
 import pygame
 
-from game.constants import Paths
-from game.objects import ImageObject, TextShootObject
 from game.objects.bomb import BombObject
+from game.constants import Paths, Colors
+from game.objects import ImageObject, TextShootObject, TextObject
 from game.objects.text_shoot import TextShootState
 from game.scenes.base.scene import Scene
 
@@ -20,6 +20,7 @@ class Game(Scene):
         self.texts = []
         self.new_missile_timer = 1
         self.lock = None
+        self.start_ticks = pygame.time.get_ticks()
 
         # Background image
 
@@ -39,6 +40,8 @@ class Game(Scene):
 
     def handle_events(self, event):
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.manager.change_scene("main_menu")
             if not self.lock:
                 for text in self.texts:
                     result = text.key_input(event.key)
@@ -67,6 +70,23 @@ class Game(Scene):
 
     def draw(self):
         self.background.draw()
+
+        # Build the timer, and have it pass at double time.
+        milliseconds_passed = (pygame.time.get_ticks() * 2) - self.start_ticks
+        milliseconds_left = 600000 - milliseconds_passed
+        minutes = int(milliseconds_left / 1000 // 60)
+        seconds = int(milliseconds_left / 1000) - (minutes * 60)
+        milliseconds = int(milliseconds_left) - (minutes * 60000) - (seconds * 1000)
+
+        time_display = f"{minutes}:{seconds}.{milliseconds}"
+
+        # Make the timer object
+        TextObject(
+            (500, 200),
+            time_display,
+            font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf",
+            font_color=Colors.blurple
+        ).draw()
 
         if self.new_missile_timer == 0:
             new_missile = BombObject(
