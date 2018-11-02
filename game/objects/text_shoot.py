@@ -65,6 +65,8 @@ class TextShootObject(TextObject):
             self.surface.get_height()
         ))
 
+        surface.set_colorkey((0, 0, 0))
+
         pygame.draw.ellipse(
             surface, BACKGROUND_COLOUR,
             Rect(0, 0, 20, surface.get_height())
