@@ -68,8 +68,10 @@ class Game(Scene):
                 elif result == TextShootState.WRONG_KEY:
                     self.wrong.play()
 
-    def draw(self):
-        self.background.draw()
+    def draw_timer(self):
+        """
+        Build and draw a timer.
+        """
 
         # Build the timer, and have it pass at double time.
         milliseconds_passed = (pygame.time.get_ticks() * 2) - self.start_ticks
@@ -87,6 +89,10 @@ class Game(Scene):
             font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf",
             font_color=Colors.blurple
         ).draw()
+
+    def draw(self):
+        self.background.draw()
+        self.draw_timer()
 
         if self.new_missile_timer == 0:
             new_missile = BombObject(
