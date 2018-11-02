@@ -21,9 +21,9 @@ class Game(Scene):
         self.new_missile_timer = 1
         self.lock = None
         self.start_ticks = pygame.time.get_ticks()
+        self.milliseconds_left = 600000
 
         # Background image
-
         background_path = Paths.levels / random.choice(["level_bg.png", "level_bg_2.png"])
 
         self.background = ImageObject(
@@ -75,10 +75,10 @@ class Game(Scene):
 
         # Build the timer, and have it pass at double time.
         milliseconds_passed = (pygame.time.get_ticks() * 2) - self.start_ticks
-        milliseconds_left = 600000 - milliseconds_passed
-        minutes = int(milliseconds_left / 1000 // 60)
-        seconds = int(milliseconds_left / 1000) - (minutes * 60)
-        milliseconds = int(milliseconds_left) - (minutes * 60000) - (seconds * 1000)
+        self.milliseconds_left = 600000 - milliseconds_passed
+        minutes = int(self.milliseconds_left / 1000 // 60)
+        seconds = int(self.milliseconds_left / 1000) - (minutes * 60)
+        milliseconds = int(self.milliseconds_left) - (minutes * 60000) - (seconds * 1000)
 
         time_display = f"{minutes}:{seconds}.{milliseconds}"
 
