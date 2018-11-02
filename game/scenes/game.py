@@ -44,6 +44,7 @@ class Game(Scene):
                     if result == TextShootState.SUCCESS:
                         self.gunshot.play()
                         self.lock = text
+                        break
                     elif result == TextShootState.WRONG_KEY:
                         self.wrong.play()
                     elif result == TextShootState.WORD_END:
