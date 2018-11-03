@@ -40,12 +40,19 @@ class Game(Scene):
 
         # Some random NPCs
         number_of_npcs = random.randint(3, 7)
+        npc_slots = [
+            (123, 850),
+            (211, 850),
+            (284, 850),
+            (450, 850),
+            (570, 850),
+            (800, 850),
+            (990, 850),
+        ]
         self.npcs = []
         for _ in range(number_of_npcs):
             self.npcs.append(
-                NPC(
-                    (random.randint(100, 1000), 550)
-                )
+                NPC(npc_slots.pop(random.randint(0, len(npc_slots))))
             )
 
     def handle_events(self, event):
