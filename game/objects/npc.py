@@ -35,6 +35,9 @@ class NPC(GraphicalObject):
         print(avatar_num)
         avatar_image = pygame.transform.smoothscale(avatar_image, AVATAR_SIZE)
 
+        # Turn around after x frames
+        self.frames_until_turn = random.randint(100, 500)
+
         size = (
             headless_image.get_width() + 20,
             avatar_image.get_height() + headless_image.get_height() - AVATAR_OFFSET_Y

@@ -96,6 +96,11 @@ class Game(Scene):
         timer.draw()
 
         for npc in self.npcs:
+            if npc.frames_until_turn <= 0:
+                npc.flip()
+                npc.frames_until_turn = random.randint(100, 3000)
+            else:
+                npc.frames_until_turn -= 1
             npc.draw()
 
         if self.new_missile_timer == 0:

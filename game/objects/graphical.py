@@ -24,6 +24,7 @@ class GraphicalObject:
         self.location = location
         self.surface = surface
         self.size = self.surface.get_size()
+        self.orientation = "Right"
 
         # If the user has moved less than 1 pixel, we store the amount here
         self.subpixel_horizontal = 0.0
@@ -73,7 +74,16 @@ class GraphicalObject:
             # No point in drawing it if it isn't visible
             return
 
-        screen.blit(self.surface, self.location)
+        if self.orientation == "Right":
+            screen.blit(self.surface, self.location)
+        else:
+            screen.blit(pygame.transform.flip(self.surface, True, False), self.location)
+
+    def flip(self):
+        if self.orientation == "Right":
+            self.orientation = "Left"
+        else:
+            self.orientation = "Right"
 
     def move(self, horizontal: Union[int, float] = 0, vertical: Union[int, float] = 0):
         """
