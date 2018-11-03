@@ -26,8 +26,10 @@ class Explosion(GraphicalObject):
 
         filename, color = random.choice(explosion_sets)
         explosion_image: Surface = pygame.image.load(str(Paths.effects / filename))
-        explosion_font: Font = Font(str(font_path), 50)
+        explosion_font: Font = Font(str(font_path), 35)
         explosion_text: Surface = explosion_font.render(word, True, color)
+
+        explosion_image = pygame.transform.smoothscale(explosion_image, (200, 200))
 
         # Turn around after x frames
         surface = Surface((200, 200))
@@ -36,7 +38,13 @@ class Explosion(GraphicalObject):
         surface.blits(
             (
                 (explosion_image, (0, 0)),
-                (explosion_text, (0, 0))
+                (
+                    explosion_text,
+                    (
+                        (explosion_image.get_width() / 2) - explosion_text.get_width() / 2,
+                        (explosion_image.get_height() / 2) - explosion_text.get_height() / 2
+                    )
+                )
             )
         )
 
