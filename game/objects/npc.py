@@ -32,7 +32,7 @@ class NPC(GraphicalObject):
         avatar_image: Surface = pygame.image.load(str(Paths.avatars / f"{avatar_num}.png"))
         headless_image: Surface = pygame.image.load(str(Paths.headless / f"headless{avatar_num % 5}.png"))
 
-        avatar_image = pygame.transform.scale(avatar_image, AVATAR_SIZE)
+        avatar_image = pygame.transform.smoothscale(avatar_image, AVATAR_SIZE)
 
         size = (
             headless_image.get_width() + 20,
