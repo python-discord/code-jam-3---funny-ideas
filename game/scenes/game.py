@@ -1,9 +1,10 @@
 import random
+from typing import List, Tuple
 
 import pygame
 
 from game.constants import Paths
-from game.objects import ImageObject, TextShootObject, Timer, Explosion
+from game.objects import Explosion, ImageObject, TextShootObject, Timer
 from game.objects.bomb import BombObject
 from game.objects.npc import NPC
 from game.objects.text_shoot import TextShootState
@@ -17,7 +18,8 @@ class Game(Scene):
     def __init__(self, manager):
         super().__init__(manager)
 
-        self.texts = []
+        self.explosions: List[Explosion] = []
+        self.texts: List[TextShootObject] = []
         self.new_missile_timer = 1
         self.lock = None
         self.start_ticks = pygame.time.get_ticks()
@@ -56,13 +58,6 @@ class Game(Scene):
                 NPC(npc_slots.pop(-1))
             )
 
-        # An explosion
-        self.explosion = Explosion(
-            (300, 300),
-            Paths.fonts / "ObelixPro-Cry-cyr.ttf",
-            "BOOM!"
-        )
-
     def handle_events(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -77,21 +72,40 @@ class Game(Scene):
                         self.lock = text
                         break
                     elif result == TextShootState.WRONG_KEY:
-                        self.wrong.play()
+                        self.wrong.play()  # TODO: Don't play this for every missile?
                     elif result == TextShootState.WORD_END:
                         self.gunshot.play()
+                        self.texts.remove(text)
+                        self.add_explosion(
+                            text.location,
+                            "BOOM!"
+                        )
                         self.lock = None
 
             else:
                 result = self.lock.key_input(event.key)
+
                 if result == TextShootState.SUCCESS:
                     self.gunshot.play()
                 elif result == TextShootState.WORD_END:
                     self.gunshot.play()
                     self.texts.remove(self.lock)
+                    self.add_explosion(
+                        self.lock.location,
+                        "BOOM!"
+                    )
                     self.lock = None
                 elif result == TextShootState.WRONG_KEY:
                     self.wrong.play()
+
+    def add_explosion(self, location: Tuple[int, int], text: str, partial: bool = False):
+        explosion = Explosion(
+            location,
+            Paths.fonts / "ObelixPro-Cry-cyr.ttf",
+            text
+        )
+
+        self.explosions.append(explosion)
 
     def draw(self):
         self.background.draw()
@@ -101,8 +115,6 @@ class Game(Scene):
             font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
         )
         timer.draw()
-
-        self.explosion.draw()
 
         for npc in self.npcs:
             if npc.frames_until_turn <= 0:
@@ -128,3 +140,9 @@ class Game(Scene):
 
         for text in self.texts:
             text.draw()
+
+        for explosion in self.explosions.copy():
+            explosion.draw()
+
+            if explosion.frame_count >= explosion.frame_length:
+                self.explosions.remove(explosion)

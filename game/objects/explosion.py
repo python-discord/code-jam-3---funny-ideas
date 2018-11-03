@@ -1,10 +1,11 @@
-import pygame
 import random
+from typing import Tuple
 
+import pygame
 from pygame import Surface
 from pygame.font import Font
 
-from game.constants import Paths, Colors
+from game.constants import Colors, Paths
 from game.objects.graphical import GraphicalObject
 
 
@@ -15,7 +16,12 @@ class Explosion(GraphicalObject):
     Blits both graphics and text, and plays a sound effect.
     """
 
-    def __init__(self, location, font_path, word):
+    def __init__(self, location: Tuple[int, int], font_path, word, frame_length: int = 60):
+        self.frame_length = frame_length
+        self.frame_count = 0
+
+        self.sound = pygame.mixer.Sound(str(Paths.sfx / "explosion.ogg"))
+        self.sound.play()
 
         explosion_sets = (
             ("explosion-blue.png", Colors.orange),
@@ -26,10 +32,10 @@ class Explosion(GraphicalObject):
 
         filename, color = random.choice(explosion_sets)
         explosion_image: Surface = pygame.image.load(str(Paths.effects / filename))
-        explosion_font: Font = Font(str(font_path), 35)
+        explosion_font: Font = Font(str(font_path), 16)
         explosion_text: Surface = explosion_font.render(word, True, color)
 
-        explosion_image = pygame.transform.smoothscale(explosion_image, (200, 200))
+        explosion_image = pygame.transform.smoothscale(explosion_image, (100, 100))
 
         # Turn around after x frames
         surface = Surface((200, 200))
@@ -49,3 +55,10 @@ class Explosion(GraphicalObject):
         )
 
         super().__init__(location, surface)
+
+    def draw(self):
+        if self.frame_count >= self.frame_length:
+            return
+
+        self.frame_count += 1
+        super().draw()

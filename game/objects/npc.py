@@ -4,7 +4,7 @@ from typing import Tuple
 import pygame
 from pygame.surface import Surface
 
-from game.constants import Paths, Colors, Avatars
+from game.constants import Avatars, Colors, Paths
 from game.objects import GraphicalObject
 
 
