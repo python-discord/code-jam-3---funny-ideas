@@ -2,8 +2,8 @@ import random
 
 import pygame
 
-from game.constants import Colors, Paths
-from game.objects import ImageObject, TextObject, TextShootObject
+from game.constants import Paths
+from game.objects import ImageObject, TextShootObject, Timer
 from game.objects.bomb import BombObject
 from game.objects.text_shoot import TextShootState
 from game.scenes.base.scene import Scene
@@ -16,7 +16,6 @@ class Game(Scene):
     def __init__(self, manager):
         super().__init__(manager)
 
-        self.missiles = []
         self.texts = []
         self.new_missile_timer = 1
         self.lock = None
@@ -68,35 +67,14 @@ class Game(Scene):
                 elif result == TextShootState.WRONG_KEY:
                     self.wrong.play()
 
-    def draw_timer(self, location, font_name, color):
-        """
-        Build and draw a timer.
-        """
-
-        # Build the timer, and have it pass at double time.
-        milliseconds_passed = (pygame.time.get_ticks() * 2) - self.start_ticks
-        self.milliseconds_left = 600000 - milliseconds_passed
-        minutes = int(self.milliseconds_left / 1000 // 60)
-        seconds = int(self.milliseconds_left / 1000) - (minutes * 60)
-        milliseconds = int(self.milliseconds_left) - (minutes * 60000) - (seconds * 1000)
-
-        time_display = f"{minutes}:{seconds}.{milliseconds}"
-
-        # Make the timer object
-        TextObject(
-            location,
-            time_display,
-            font_path=Paths.fonts / font_name,
-            font_color=color
-        ).draw()
-
     def draw(self):
         self.background.draw()
-        self.draw_timer(
+        timer = Timer(
             (1080, 20),
-            "ObelixPro-Cry-cyr.ttf",
-            Colors.white
+            self.start_ticks,
+            font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
         )
+        timer.draw()
 
         if self.new_missile_timer == 0:
             new_missile = BombObject(
@@ -104,7 +82,6 @@ class Game(Scene):
                 random.choice([0.1, 0.2, 0.3, 0.4])
             )
 
-            self.missiles.append(new_missile)
             self.texts.append(
                 TextShootObject((0, 0), new_missile)
             )
