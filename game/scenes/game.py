@@ -5,6 +5,7 @@ import pygame
 from game.constants import Paths
 from game.objects import ImageObject, TextShootObject, Timer
 from game.objects.bomb import BombObject
+from game.objects.npc import NPC
 from game.objects.text_shoot import TextShootState
 from game.scenes.base.scene import Scene
 
@@ -36,6 +37,16 @@ class Game(Scene):
         # SFX
         self.gunshot = pygame.mixer.Sound(str(Paths.sfx / "gunshot.ogg"))
         self.wrong = pygame.mixer.Sound(str(Paths.sfx / "wrong_letter.ogg"))
+
+        # Some random NPCs
+        number_of_npcs = random.randint(3, 7)
+        self.npcs = []
+        for _ in range(number_of_npcs):
+            self.npcs.append(
+                NPC(
+                    (random.randint(100, 1000), 550)
+                )
+            )
 
     def handle_events(self, event):
         if event.type == pygame.KEYDOWN:
@@ -75,6 +86,9 @@ class Game(Scene):
             font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
         )
         timer.draw()
+
+        for npc in self.npcs:
+            npc.draw()
 
         if self.new_missile_timer == 0:
             new_missile = BombObject(
