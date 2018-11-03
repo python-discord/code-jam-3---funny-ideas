@@ -1,3 +1,4 @@
+from game.objects.explosion import Explosion
 from game.objects.floating_object import FloatingObject
 from game.objects.graphical import GraphicalObject
 from game.objects.image import ImageObject
@@ -7,6 +8,7 @@ from game.objects.timer import Timer
 
 
 __all__ = [
+    "Explosion",
     "FloatingObject",
     "GraphicalObject",
     "ImageObject",

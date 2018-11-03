@@ -14,10 +14,10 @@ class BombObject(ImageObject):
     def __init__(self, location: Tuple[int, int], speed: float):
         self.speed = speed
 
-        super(BombObject, self).__init__(location, Paths.items / "kickmissile.png")
+        super().__init__(location, Paths.items / "kickmissile.png")
 
     def draw(self):
         y_direction = random.choice([-1, 1])
         self.move(self.speed * y_direction, self.speed)
 
-        super(BombObject, self).draw()
+        super().draw()

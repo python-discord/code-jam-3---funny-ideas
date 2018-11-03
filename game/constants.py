@@ -9,6 +9,8 @@ class Colors(NamedTuple):
     green = (0, 255, 0)
     red = (255, 0, 0)
     white = (255, 255, 255)
+    yellow = (255, 255, 0)
+    orange = (255, 165, 0)
 
 
 class Window(NamedTuple):
@@ -16,6 +18,13 @@ class Window(NamedTuple):
     height = 800
     depth = 32
     title = "Code Jam III: Funny Ideas"
+
+
+class Avatars(NamedTuple):
+    max_number = 58
+    offset_x = 23
+    offset_y = 10
+    size = (64, 64)
 
 
 class Paths(NamedTuple):

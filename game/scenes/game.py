@@ -3,7 +3,7 @@ import random
 import pygame
 
 from game.constants import Paths
-from game.objects import ImageObject, TextShootObject, Timer
+from game.objects import ImageObject, TextShootObject, Timer, Explosion
 from game.objects.bomb import BombObject
 from game.objects.npc import NPC
 from game.objects.text_shoot import TextShootState
@@ -56,6 +56,13 @@ class Game(Scene):
                 NPC(npc_slots.pop(-1))
             )
 
+        # An explosion
+        self.explosion = Explosion(
+            (300, 300),
+            Paths.fonts / "ObelixPro-Cry-cyr.ttf",
+            "BOOM!"
+        )
+
     def handle_events(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -94,6 +101,8 @@ class Game(Scene):
             font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
         )
         timer.draw()
+
+        self.explosion.draw()
 
         for npc in self.npcs:
             if npc.frames_until_turn <= 0:
