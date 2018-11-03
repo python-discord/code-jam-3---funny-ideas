@@ -4,11 +4,11 @@ from typing import Tuple
 import pygame
 from pygame.surface import Surface
 
-from game.constants import Paths
+from game.constants import Paths, Colors
 from game.objects import GraphicalObject
 
 
-AVATAR_MAX_NUM = 65
+AVATAR_MAX_NUM = 58
 AVATAR_OFFSET_X = 23
 AVATAR_OFFSET_Y = 10
 AVATAR_SIZE = (64, 64)
@@ -32,6 +32,7 @@ class NPC(GraphicalObject):
         avatar_image: Surface = pygame.image.load(str(Paths.avatars / f"{avatar_num}.png"))
         headless_image: Surface = pygame.image.load(str(Paths.headless / f"headless{avatar_num % 5}.png"))
 
+        print(avatar_num)
         avatar_image = pygame.transform.smoothscale(avatar_image, AVATAR_SIZE)
 
         size = (
@@ -40,8 +41,8 @@ class NPC(GraphicalObject):
         )
 
         surface = Surface(size)
-        surface.fill((0, 0, 0))  #horrible magenta. make this a constant.
-        surface.set_colorkey((0, 0, 0))
+        surface.fill(Colors.black)
+        surface.set_colorkey(Colors.black)
         surface.blits(
             (
                 (headless_image, (0, avatar_image.get_height() - AVATAR_OFFSET_Y)),
