@@ -32,7 +32,7 @@ class NPC(GraphicalObject):
         avatar_image: Surface = pygame.image.load(str(Paths.avatars / f"{avatar_num}.png"))
         headless_image: Surface = pygame.image.load(str(Paths.headless / f"headless{avatar_num % 5}.png"))
 
-        avatar_image = pygame.transform.smoothscale(avatar_image, AVATAR_SIZE)
+        avatar_image = pygame.transform.scale(avatar_image, AVATAR_SIZE)
 
         size = (
             headless_image.get_width() + 20,
@@ -40,6 +40,8 @@ class NPC(GraphicalObject):
         )
 
         surface = Surface(size)
+        surface.fill((0, 0, 0))  #horrible magenta. make this a constant.
+        surface.set_colorkey((0, 0, 0))
         surface.blits(
             (
                 (headless_image, (0, avatar_image.get_height() - AVATAR_OFFSET_Y)),
