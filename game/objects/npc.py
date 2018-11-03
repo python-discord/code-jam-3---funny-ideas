@@ -21,12 +21,17 @@ class NPC(GraphicalObject):
         :param location: The top-left coordinate of the object on the screen.
         """
 
-        avatar_num = random.randint(0, Avatars.max_number)
-
-        avatar_image: Surface = pygame.image.load(str(Paths.avatars / f"{avatar_num}.png"))
-        headless_image: Surface = pygame.image.load(str(Paths.headless / f"headless{avatar_num % 5}.png"))
-
-        avatar_image = pygame.transform.smoothscale(avatar_image, Avatars.size)
+        # Crash proof scaling
+        while True:
+            try:
+                avatar_num = random.randint(0, Avatars.max_number)
+                avatar_image: Surface = pygame.image.load(str(Paths.avatars / f"{avatar_num}.png"))
+                headless_image: Surface = pygame.image.load(str(Paths.headless / f"headless{avatar_num % 5}.png"))
+                avatar_image = pygame.transform.smoothscale(avatar_image, Avatars.size)
+            except ValueError:
+                print(f"ERROR: Avatar {avatar_num} is not 24 or 32bit")
+            else:
+                break
 
         # Turn around after x frames
         self.frames_until_turn = random.randint(100, 500)
