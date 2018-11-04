@@ -16,9 +16,11 @@ class Explosion(GraphicalObject):
     Blits both graphics and text, and plays a sound effect.
     """
 
-    def __init__(self, location: Tuple[int, int], font_path, word, frame_length: int = 60):
+    def __init__(self, location: Tuple[int, int], font_path, word, size: int, frame_length: int = 60):
         self.frame_length = frame_length
         self.frame_count = 0
+        self.angle = 0.0
+        self.zoom = 1.0
 
         self.sound = pygame.mixer.Sound(str(Paths.sfx / "explosion.ogg"))
         self.sound.play()
@@ -36,7 +38,7 @@ class Explosion(GraphicalObject):
         explosion_font: Font = Font(str(font_path), explosion_font_size)
         explosion_text: Surface = explosion_font.render(word, True, color)
 
-        explosion_image = pygame.transform.smoothscale(explosion_image, (175, 175))
+        explosion_image = pygame.transform.smoothscale(explosion_image, (size, size))
 
         # Turn around after x frames
         surface = Surface((200, 200))
@@ -62,4 +64,5 @@ class Explosion(GraphicalObject):
             return
 
         self.frame_count += 1
+
         super().draw()

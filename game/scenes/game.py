@@ -6,6 +6,7 @@ import pygame
 from game.constants import Explosions, Paths, Window
 from game.objects import Explosion, ImageObject, TextShootObject, Timer
 from game.objects.bomb import BombObject
+from game.objects.flutterdude import Flutterdude
 from game.objects.npc import NPC
 from game.objects.text_shoot import TextShootState
 from game.scenes.base.scene import Scene
@@ -62,6 +63,12 @@ class Game(Scene):
                 NPC(npc_slots.pop(-1))
             )
 
+        # Flutterdude enemy
+        self.flutterdude = Flutterdude(
+            (0, 75),
+            1.5
+        )
+
     def handle_events(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -80,7 +87,8 @@ class Game(Scene):
                         self.texts.remove(text)
                         self.add_explosion(
                             text.location,
-                            random.choice(Explosions.destroy_text)
+                            random.choice(Explosions.destroy_text),
+                            size=125
                         )
                         self.lock = None
 
@@ -94,17 +102,19 @@ class Game(Scene):
                     self.texts.remove(self.lock)
                     self.add_explosion(
                         self.lock.location,
-                        random.choice(Explosions.destroy_text)
+                        random.choice(Explosions.destroy_text),
+                        size=125
                     )
                     self.lock = None
                 elif result == TextShootState.WRONG_KEY:
                     self.wrong.play()
 
-    def add_explosion(self, location: Tuple[int, int], text: str, partial: bool = False):
+    def add_explosion(self, location: Tuple[int, int], text: str, size: int = 175, partial: bool = False):
         explosion = Explosion(
             location,
             Paths.fonts / "ObelixPro-Cry-cyr.ttf",
-            text
+            text,
+            size,
         )
 
         self.explosions.append(explosion)
@@ -130,12 +140,12 @@ class Game(Scene):
                     npc.frames_until_turn -= 1
                 npc.draw()
 
+            # Flutterdude movement
+            self.flutterdude.draw()
+
             # Create new missiles periodically
-            if self.new_missile_timer == 0:
-                new_missile = BombObject(
-                    (random.randint(0, self.screen.get_width()), 260),
-                    random.choice([0.1, 0.2, 0.3, 0.4])
-                )
+            if self.new_missile_timer == 0 or not self.texts:
+                new_missile = self.flutterdude.create_bomb()
 
                 self.texts.append(
                     TextShootObject((0, 0), new_missile)
@@ -154,7 +164,8 @@ class Game(Scene):
                     # Explode the missile!
                     self.add_explosion(
                         text.location,
-                        random.choice(Explosions.ban_text)
+                        random.choice(Explosions.ban_text),
+                        size=250
                     )
                     self.texts.remove(text)
 
