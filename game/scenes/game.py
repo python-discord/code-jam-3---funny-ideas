@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import pygame
 
-from game.constants import Paths, Explosions, Window
+from game.constants import Explosions, Paths, Window
 from game.objects import Explosion, ImageObject, TextShootObject, Timer
 from game.objects.bomb import BombObject
 from game.objects.npc import NPC
@@ -196,7 +196,3 @@ class Game(Scene):
                     self.you_lose_sfx.play()
 
                 self.you_lose.draw()
-
-
-
-

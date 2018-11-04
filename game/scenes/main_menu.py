@@ -35,6 +35,17 @@ class MainMenu(Scene):
         )
         self.logo.move_absolute(logo_location)
 
+        # How to play
+        self.how_to_play_open = False
+        self.how_to_play = ImageObject(
+            (0, 0),
+            Paths.ui / "how_to_play.png"
+        )
+        self.close_how_to_play = ImageObject(
+            (1060, 300),
+            Paths.ui / "close_window.png"
+        )
+
         # Background image
         self.background = ImageObject(
             (0, 0),
@@ -64,9 +75,9 @@ class MainMenu(Scene):
             font_size=60,
         )
 
-        self.settings_text = TextObject(
+        self.how_to_play_text = TextObject(
             (90, 480),
-            "Settings",
+            "How to play",
             font_path=Paths.fonts / "NANDA.TTF",
             font_size=60,
         )
@@ -80,8 +91,9 @@ class MainMenu(Scene):
 
         self.menu_items = {
             "start": self.start_game_text,
-            "settings": self.settings_text,
+            "how to play": self.how_to_play_text,
             "quit": self.quit_text,
+            "close": self.close_how_to_play,
         }
 
         # SFX
@@ -94,10 +106,18 @@ class MainMenu(Scene):
 
     def handle_events(self, event):
         for name, item in self.menu_items.items():
+
+            if event.type == pygame.KEYDOWN:
+                if self.how_to_play_open and event.key == pygame.K_ESCAPE:
+                    self.how_to_play_open = False
+                    break
+
             if item.mouseover():
                 if not item.highlighted:
                     item.highlight()
-                    item.move(15, 0)
+
+                    if not name == "close":
+                        item.move(15, 0)
 
                 if pygame.mouse.get_pressed()[0]:  # Left mouse button pressed
                     # Quit button
@@ -110,8 +130,12 @@ class MainMenu(Scene):
                         self.manager.change_scene("game")
 
                     # Settings
-                    elif name == "settings":
-                        pass
+                    elif name == "how to play":
+                        self.how_to_play_open = True
+
+                    # Close "How to play" menu
+                    elif name == "close":
+                        self.how_to_play_open = False
             else:
                 if item.highlighted:
                     item.remove_highlight()
@@ -122,11 +146,15 @@ class MainMenu(Scene):
         self.background.draw()
         self.logo.draw()
 
-        # Draw the floaty entities
-        self.brainmon.draw()
-        self.flutterdude.draw()
+        if not self.how_to_play_open:
+            # Draw the floaty entities
+            self.brainmon.draw()
+            self.flutterdude.draw()
 
-        # Draw the menu
-        self.start_game_text.draw()
-        self.settings_text.draw()
-        self.quit_text.draw()
+            # Draw the menu
+            self.start_game_text.draw()
+            self.how_to_play_text.draw()
+            self.quit_text.draw()
+        else:
+            self.how_to_play.draw()
+            self.close_how_to_play.draw()

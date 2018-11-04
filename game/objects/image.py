@@ -4,6 +4,7 @@ from typing import Tuple, Union
 import pygame
 from pygame.surface import Surface
 
+from game import Colors
 from game.objects.graphical import GraphicalObject
 
 
@@ -23,9 +24,39 @@ class ImageObject(GraphicalObject):
                      assuming the size of the image is correct
         """
 
-        image: Surface = pygame.image.load(str(image_path))
+        self.image_path = image_path
+        self.image: Surface = pygame.image.load(str(image_path))
 
-        if size and size != image.get_size():
+        self.size = size
+        if size and size != self.image.get_size():
             self.image = pygame.transform.smoothscale(self.image, size)
 
-        super().__init__(location, image)
+        self.highlight_color = Colors.yellow
+        self.highlighted = False
+
+        super().__init__(location, self.image)
+
+    def highlight(self):
+        """
+        Changes the blit color,
+        in order to "highlight" the element
+        for example during mouseover.
+        """
+
+        if not self.highlighted:
+
+            self.surface = self.surface.copy()
+            self.surface.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
+            self.surface.fill(Colors.orange + (0,), None, pygame.BLEND_RGBA_ADD)
+            self.highlighted = True
+
+    def remove_highlight(self):
+        """
+        Changes the font color back,
+        in order to remove the highlight.
+        """
+
+        if self.highlighted:
+            self.image = pygame.image.load(str(self.image_path))
+            self.surface = pygame.transform.smoothscale(self.image, self.size)
+            self.highlighted = False
