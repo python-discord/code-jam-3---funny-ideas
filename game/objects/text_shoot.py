@@ -27,9 +27,9 @@ class TextShootObject(TextObject):
         self.is_long = long
 
         if long:
-            self.word = random.choice(Words.long).upper()
+            self.word = random.choice(Words.long).upper().replace(" ", "_")
         else:
-            self.word = random.choice(Words.single).upper()
+            self.word = random.choice(Words.single).upper().replace(" ", "_")
 
         self.typed = 0
 
@@ -45,6 +45,9 @@ class TextShootObject(TextObject):
 
     def key_input(self, key):
         key_name = pygame.key.name(key)
+
+        if key_name == " ":
+            key_name = "_"
 
         if self.word[self.typed].lower() == key_name:
             if self.typed == len(self.word) - 1:
