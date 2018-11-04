@@ -27,6 +27,31 @@ class Avatars(NamedTuple):
     size = (64, 64)
 
 
+class Explosions(NamedTuple):
+    destroy_text = (
+        "BOOM!",
+        "DING!",
+        "POP!",
+        "NOPE!",
+        "GOT'EM!",
+        "SUP G?",
+        "HA!",
+        "BUST!",
+        "SMH!",
+    )
+
+    ban_text = (
+        "BANNED!",
+        "KICKED!",
+        "MUTED!",
+        "PERMABANNED!",
+        "DEFCON!",
+        "SEE YOU LATER!",
+        "HIPHOPIFIED!",
+        "SMACK!",
+    )
+
+
 class Paths(NamedTuple):
     """
     Path objects that define the various
@@ -48,5 +73,5 @@ class Paths(NamedTuple):
     headless = graphics / "headless"
     items = graphics / "items"
     levels = graphics / "levels"
-    main_menu = graphics / "main_menu"
+    ui = graphics / "ui"
     splash = graphics / "splash"

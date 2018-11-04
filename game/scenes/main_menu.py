@@ -24,7 +24,7 @@ class MainMenu(Scene):
         # Main game logo
         self.logo = ImageObject(
             (0, 0),
-            Paths.main_menu / "logo.png",
+            Paths.ui / "logo.png",
         )
 
         # Move the logo to the right position, based on screen size.
@@ -38,7 +38,7 @@ class MainMenu(Scene):
         # Background image
         self.background = ImageObject(
             (0, 0),
-            Paths.main_menu / "background.png",
+            Paths.ui / "background.png",
         )
 
         # Floaty dudes

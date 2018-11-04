@@ -32,10 +32,11 @@ class Explosion(GraphicalObject):
 
         filename, color = random.choice(explosion_sets)
         explosion_image: Surface = pygame.image.load(str(Paths.effects / filename))
-        explosion_font: Font = Font(str(font_path), 16)
+        explosion_font_size: int = 26 - (len(word) - 5)
+        explosion_font: Font = Font(str(font_path), explosion_font_size)
         explosion_text: Surface = explosion_font.render(word, True, color)
 
-        explosion_image = pygame.transform.smoothscale(explosion_image, (100, 100))
+        explosion_image = pygame.transform.smoothscale(explosion_image, (175, 175))
 
         # Turn around after x frames
         surface = Surface((200, 200))

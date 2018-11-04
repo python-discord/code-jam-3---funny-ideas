@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import pygame
 
-from game.constants import Paths
+from game.constants import Paths, Explosions, Window
 from game.objects import Explosion, ImageObject, TextShootObject, Timer
 from game.objects.bomb import BombObject
 from game.objects.npc import NPC
@@ -24,6 +24,9 @@ class Game(Scene):
         self.lock = None
         self.start_ticks = pygame.time.get_ticks()
         self.milliseconds_left = 600000
+        self.game_running = True
+        self.you_lose = None
+        self.you_win = None
 
         # Background image
         background_path = Paths.levels / random.choice(["level_bg.png", "level_bg_2.png"])
@@ -39,6 +42,7 @@ class Game(Scene):
         # SFX
         self.gunshot = pygame.mixer.Sound(str(Paths.sfx / "gunshot.ogg"))
         self.wrong = pygame.mixer.Sound(str(Paths.sfx / "wrong_letter.ogg"))
+        self.you_lose_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_lose.ogg"))
 
         # Some random NPCs
         number_of_npcs = random.randint(3, 7)
@@ -71,14 +75,12 @@ class Game(Scene):
                         self.gunshot.play()
                         self.lock = text
                         break
-                    elif result == TextShootState.WRONG_KEY:
-                        self.wrong.play()  # TODO: Don't play this for every missile?
                     elif result == TextShootState.WORD_END:
                         self.gunshot.play()
                         self.texts.remove(text)
                         self.add_explosion(
                             text.location,
-                            "BOOM!"
+                            random.choice(Explosions.destroy_text)
                         )
                         self.lock = None
 
@@ -92,7 +94,7 @@ class Game(Scene):
                     self.texts.remove(self.lock)
                     self.add_explosion(
                         self.lock.location,
-                        "BOOM!"
+                        random.choice(Explosions.destroy_text)
                     )
                     self.lock = None
                 elif result == TextShootState.WRONG_KEY:
@@ -109,40 +111,92 @@ class Game(Scene):
 
     def draw(self):
         self.background.draw()
-        timer = Timer(
-            (1080, 20),
-            self.start_ticks,
-            font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
-        )
-        timer.draw()
 
-        for npc in self.npcs:
-            if npc.frames_until_turn <= 0:
-                npc.flip()
-                npc.frames_until_turn = random.randint(100, 3000)
+        if self.game_running:
+            # Draw the timer
+            timer = Timer(
+                (1080, 20),
+                self.start_ticks,
+                font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
+            )
+            timer.draw()
+
+            # Draw those pesky NPCs
+            for npc in self.npcs:
+                if npc.frames_until_turn <= 0:
+                    npc.flip()
+                    npc.frames_until_turn = random.randint(100, 3000)
+                else:
+                    npc.frames_until_turn -= 1
+                npc.draw()
+
+            # Create new missiles periodically
+            if self.new_missile_timer == 0:
+                new_missile = BombObject(
+                    (random.randint(0, self.screen.get_width()), 260),
+                    random.choice([0.1, 0.2, 0.3, 0.4])
+                )
+
+                self.texts.append(
+                    TextShootObject((0, 0), new_missile)
+                )
+
+                self.new_missile_timer = 200
             else:
-                npc.frames_until_turn -= 1
-            npc.draw()
+                self.new_missile_timer -= 1
 
-        if self.new_missile_timer == 0:
-            new_missile = BombObject(
-                (random.randint(0, self.screen.get_width()), 260),
-                random.choice([0.1, 0.2, 0.3, 0.4])
-            )
+            # Draw the missiles
+            for text in self.texts:
+                text_x, text_y = text.location
+                y_loc = text_y + text.surface.get_rect().bottomleft[1]
+                if y_loc >= 550:
 
-            self.texts.append(
-                TextShootObject((0, 0), new_missile)
-            )
+                    # Explode the missile!
+                    self.add_explosion(
+                        text.location,
+                        random.choice(Explosions.ban_text)
+                    )
+                    self.texts.remove(text)
 
-            self.new_missile_timer = 200
+                    # Murder the NPC!
+                    closest_npc = None
+                    for npc in self.npcs:
+                        if not closest_npc:
+                            closest_npc = npc
+                        elif abs(npc.location[0] - text_x) < abs(closest_npc.location[0] - text_x):
+                            closest_npc = npc
+                    self.npcs.remove(closest_npc)
+
+                text.draw()
+
+            # Draw all the explosions
+            for explosion in self.explosions.copy():
+                explosion.draw()
+
+                if explosion.frame_count >= explosion.frame_length:
+                    self.explosions.remove(explosion)
+
+            # Check if we've lost yet
+            if not self.npcs:
+                self.game_running = False
+
+        # Game is over, and we need to draw some UI.
         else:
-            self.new_missile_timer -= 1
+            # Player has lost
+            if not self.npcs:
 
-        for text in self.texts:
-            text.draw()
+                if not self.you_lose:
+                    self.you_lose = ImageObject(
+                        (0, 0),
+                        Paths.ui / "you_lose.png"
+                    )
+                    image_width = self.you_lose.size[0]
+                    center_x = (Window.width / 2) - (image_width / 2)
+                    self.you_lose.move_absolute((center_x, 250))
+                    self.you_lose_sfx.play()
 
-        for explosion in self.explosions.copy():
-            explosion.draw()
+                self.you_lose.draw()
 
-            if explosion.frame_count >= explosion.frame_length:
-                self.explosions.remove(explosion)
+
+
+
