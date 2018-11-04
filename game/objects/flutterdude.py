@@ -50,4 +50,3 @@ class Flutterdude(ImageObject):
             self.location[1] + (self.size[1] / 2)
         )
         return BombObject(location, random.uniform(0.1, 0.4))
-

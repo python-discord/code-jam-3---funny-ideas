@@ -102,7 +102,7 @@ class TextShootObject(TextObject):
             )
 
         if self.location[0] <= 0 or self.location[0] + self.surface.get_width() >= screen.get_width():
-            self.parent.y_direction = not self.parent.y_direction
+            self.parent.y_direction = -self.parent.y_direction
 
         super(TextObject, self).draw()
 

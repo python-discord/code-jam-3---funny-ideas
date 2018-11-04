@@ -5,7 +5,6 @@ import pygame
 
 from game.constants import Explosions, Paths, Window
 from game.objects import Explosion, ImageObject, TextShootObject, Timer
-from game.objects.bomb import BombObject
 from game.objects.flutterdude import Flutterdude
 from game.objects.npc import NPC
 from game.objects.text_shoot import TextShootState
