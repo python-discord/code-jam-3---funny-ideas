@@ -41,7 +41,7 @@ class Explosion(GraphicalObject):
         explosion_image = pygame.transform.smoothscale(explosion_image, (size, size))
 
         # Turn around after x frames
-        surface = Surface((200, 200))
+        surface = Surface((size, size))
         surface.fill(Colors.black)
         surface.set_colorkey(Colors.black)
         surface.blits(
