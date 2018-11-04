@@ -1,4 +1,3 @@
-import keyword
 import random
 from enum import Enum
 from typing import Tuple
@@ -9,7 +8,7 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from game import screen
-from game.constants import Colors, Paths
+from game.constants import Colors, Paths, Words
 from game.objects import GraphicalObject, TextObject
 
 FONT_PATH = Paths.fonts / "FiraMono-Regular.ttf"
@@ -24,8 +23,14 @@ class TextShootState(Enum):
 
 
 class TextShootObject(TextObject):
-    def __init__(self, location: Tuple[int, int], parent: GraphicalObject = None):
-        self.word = random.choice(keyword.kwlist).upper()
+    def __init__(self, location: Tuple[int, int], parent: GraphicalObject = None, long: bool = False):
+        self.is_long = long
+
+        if long:
+            self.word = random.choice(Words.long).upper()
+        else:
+            self.word = random.choice(Words.single).upper()
+
         self.typed = 0
 
         super().__init__(

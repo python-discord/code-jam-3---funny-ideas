@@ -75,3 +75,8 @@ class Paths(NamedTuple):
     levels = graphics / "levels"
     ui = graphics / "ui"
     splash = graphics / "splash"
+
+
+class Words(NamedTuple):
+    long = open(Paths.assets / "words_long.txt").read().strip().split("\n")
+    single = open(Paths.assets / "words_single.txt").read().strip().split("\n")
