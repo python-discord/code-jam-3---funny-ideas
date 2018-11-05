@@ -139,7 +139,9 @@ class MainMenu(Scene):
             else:
                 if item.highlighted:
                     item.remove_highlight()
-                    item.move(-15, 0)
+
+                    if not name == "close":
+                        item.move(-15, 0)
 
     def draw(self):
         # Draw the background and the logo

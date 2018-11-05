@@ -11,7 +11,6 @@ announcements
 antigravity
 aperture
 appreciation
-as
 assert
 astronaut
 async
@@ -21,6 +20,7 @@ bamboozlement
 banana
 bathtub
 bbq
+beardfist
 beardmon
 beautiful
 bitcoin
@@ -31,6 +31,7 @@ bomb
 braces
 brainmon
 break
+bruteforce
 burger
 channel
 checkpoint
@@ -74,6 +75,7 @@ flexible
 float
 food
 for
+forkbomb
 forknife
 from
 game
@@ -187,11 +189,12 @@ thants
 threads
 toaster
 toddy
+toddytime
 true
 try
 typing
 unban
-unironic
+unironically
 unmute
 uptime
 variable
