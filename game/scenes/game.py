@@ -4,9 +4,10 @@ from typing import List, Tuple
 import pygame
 
 from game.constants import Explosions, Paths, Window
-from game.objects import Explosion, ImageObject, TextShootObject, Timer, TextObject
-from game.objects.bomb import BombObject
+from game.objects import Explosion, ImageObject, TextObject, TextShootObject, Timer
+from game.objects.flutterdude import Flutterdude
 from game.objects.npc import NPC
+from game.objects.pyjet import PyJet
 from game.objects.text_shoot import TextShootState
 from game.scenes.base.scene import Scene
 
@@ -21,6 +22,8 @@ class Game(Scene):
         self.explosions: List[Explosion] = []
         self.texts: List[TextShootObject] = []
         self.new_missile_timer = 1
+        self.new_jet_timer = random.randint(450, 1200)
+
         self.lock = None
         self.start_ticks = pygame.time.get_ticks()
         self.milliseconds_left = 600000
@@ -41,6 +44,7 @@ class Game(Scene):
 
         # SFX
         self.gunshot = pygame.mixer.Sound(str(Paths.sfx / "gunshot.ogg"))
+        self.gunshot.set_volume(0.4)
         self.wrong = pygame.mixer.Sound(str(Paths.sfx / "wrong_letter.ogg"))
         self.you_lose_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_lose.ogg"))
         self.you_win_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_win.ogg"))
@@ -63,6 +67,14 @@ class Game(Scene):
                 NPC(npc_slots.pop(-1))
             )
 
+        # Enemies
+        self.flutterdude = Flutterdude(
+            (0, 75),
+            1.5
+        )
+
+        self.pyjet = None
+
     def handle_events(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -81,7 +93,8 @@ class Game(Scene):
                         self.texts.remove(text)
                         self.add_explosion(
                             text.location,
-                            random.choice(Explosions.destroy_text)
+                            random.choice(Explosions.destroy_text),
+                            size=125
                         )
                         self.lock = None
 
@@ -95,17 +108,19 @@ class Game(Scene):
                     self.texts.remove(self.lock)
                     self.add_explosion(
                         self.lock.location,
-                        random.choice(Explosions.destroy_text)
+                        random.choice(Explosions.destroy_text),
+                        size=125
                     )
                     self.lock = None
                 elif result == TextShootState.WRONG_KEY:
                     self.wrong.play()
 
-    def add_explosion(self, location: Tuple[int, int], text: str, partial: bool = False):
+    def add_explosion(self, location: Tuple[int, int], text: str, size: int = 175, partial: bool = False):
         explosion = Explosion(
             location,
             Paths.fonts / "ObelixPro-Cry-cyr.ttf",
-            text
+            text,
+            size,
         )
 
         self.explosions.append(explosion)
@@ -131,12 +146,12 @@ class Game(Scene):
                     npc.frames_until_turn -= 1
                 npc.draw()
 
-            # Create new missiles periodically
-            if self.new_missile_timer == 0:
-                new_missile = BombObject(
-                    (random.randint(0, self.screen.get_width()), 260),
-                    random.choice([0.1, 0.2, 0.3, 0.4])
-                )
+            # Draw the flutterdude
+            self.flutterdude.draw()
+
+            # Create new flutterdude missiles periodically
+            if self.new_missile_timer == 0 or not self.texts:
+                new_missile = self.flutterdude.create_bomb(random.uniform(0.1, 0.4))
 
                 self.texts.append(
                     TextShootObject((0, 0), new_missile)
@@ -145,6 +160,51 @@ class Game(Scene):
                 self.new_missile_timer = 200
             else:
                 self.new_missile_timer -= 1
+
+            # Create jet periodically
+            if self.new_jet_timer == 0:
+                self.pyjet = PyJet(
+                    left_to_right=random.choice((True, False))
+                )
+                self.new_jet_timer = random.randint(450, 1200)
+            else:
+                self.new_jet_timer -= 1
+
+            # Fly the jet! Rocket maaan!
+            if self.pyjet:
+                pyjet_x = self.pyjet.location[0]
+                pyjet_width = self.pyjet.size[0]
+                off_screen = (
+                    (pyjet_x + pyjet_width) <= 0
+                    and not self.pyjet.left_to_right
+                    or pyjet_x >= Window.width
+                    and self.pyjet.left_to_right
+                )
+
+                if off_screen:
+                    self.pyjet = None
+                else:
+                    if not self.pyjet.bombs_dropped == len(self.pyjet.bomb_drop_locations):
+                        drop_bomb_left = (
+                            pyjet_x >= self.pyjet.bomb_drop_locations[self.pyjet.bombs_dropped - 1]
+                            and self.pyjet.left_to_right
+                        )
+
+                        drop_bomb_right = (
+                            pyjet_x <= self.pyjet.bomb_drop_locations[-(self.pyjet.bombs_dropped + 1)]
+                            and not self.pyjet.left_to_right
+                        )
+
+                        if drop_bomb_left or drop_bomb_right:
+                            new_missile = self.pyjet.create_bomb(random.uniform(0.6, 1.2))
+
+                            self.texts.append(
+                                TextShootObject((0, 0), new_missile)
+                            )
+
+                            self.pyjet.bombs_dropped += 1
+
+                    self.pyjet.draw()
 
             # Draw the missiles
             for text in self.texts:
@@ -155,7 +215,8 @@ class Game(Scene):
                     # Explode the missile!
                     self.add_explosion(
                         text.location,
-                        random.choice(Explosions.ban_text)
+                        random.choice(Explosions.ban_text),
+                        size=250
                     )
                     self.texts.remove(text)
 
@@ -167,6 +228,10 @@ class Game(Scene):
                         elif abs(npc.location[0] - text_x) < abs(closest_npc.location[0] - text_x):
                             closest_npc = npc
                     self.npcs.remove(closest_npc)
+
+                    # Remove it from lock if it was locked.
+                    if text == self.lock:
+                        self.lock = None
 
                 text.draw()
 

@@ -1,4 +1,3 @@
-import keyword
 import random
 from enum import Enum
 from typing import Tuple
@@ -9,7 +8,7 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from game import screen
-from game.constants import Colors, Paths
+from game.constants import Colors, Paths, Words
 from game.objects import GraphicalObject, TextObject
 
 FONT_PATH = Paths.fonts / "FiraMono-Regular.ttf"
@@ -24,8 +23,14 @@ class TextShootState(Enum):
 
 
 class TextShootObject(TextObject):
-    def __init__(self, location: Tuple[int, int], parent: GraphicalObject = None):
-        self.word = random.choice(keyword.kwlist).upper()
+    def __init__(self, location: Tuple[int, int], parent: GraphicalObject = None, long: bool = False):
+        self.is_long = long
+
+        if long:
+            self.word = random.choice(Words.long).upper()
+        else:
+            self.word = random.choice(Words.single).upper()
+
         self.typed = 0
 
         super().__init__(
@@ -41,6 +46,9 @@ class TextShootObject(TextObject):
     def key_input(self, key):
         key_name = pygame.key.name(key)
 
+        if key_name == "space":
+            key_name = " "
+
         if self.word[self.typed].lower() == key_name:
             if self.typed == len(self.word) - 1:
                 return TextShootState.WORD_END
@@ -54,7 +62,7 @@ class TextShootObject(TextObject):
         elif self.typed >= len(self.word):
             self.surface = FONT.render(self.word, True, Colors.red, Colors.blurple)
         else:
-            typed_text = self.word[:self.typed]
+            typed_text = self.word[:self.typed].replace(" ", "_")
             untyped_text = self.word[self.typed:]
 
             typed_surface: Surface = FONT.render(typed_text, True, Colors.red, Colors.blurple)
@@ -101,27 +109,8 @@ class TextShootObject(TextObject):
                 self.parent.location[1] - 40
             )
 
-        if self.location[0] <= 0:
-            self.location = (
-                1,
-                self.location[1]
-            )
-
-            self.parent.location = (
-                (self.surface.get_width() / 2) + 1,
-                self.parent.location[1]
-            )
-
-        elif self.location[0] + self.surface.get_width() >= screen.get_width():
-            self.location = (
-                screen.get_width() - self.surface.get_width() - 1,
-                self.location[1]
-            )
-
-            self.parent.location = (
-                (screen.get_width() - self.surface.get_width() / 2) - 1,
-                self.parent.location[1]
-            )
+        if self.location[0] <= 0 or self.location[0] + self.surface.get_width() >= screen.get_width():
+            self.parent.y_direction = -self.parent.y_direction
 
         super(TextObject, self).draw()
 

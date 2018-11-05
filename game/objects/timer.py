@@ -12,7 +12,7 @@ class Timer(TextObject):
             self,
             location: Tuple[int, int],
             start_ticks: int,
-            speed_multiplier: float = 2.5,
+            speed_multiplier: float = 30,
             *,
             font_path: Path = None,
             font_size: int = 32,
