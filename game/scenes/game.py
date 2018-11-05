@@ -19,17 +19,21 @@ class Game(Scene):
     def __init__(self, manager):
         super().__init__(manager)
 
+        self.accuracy = None
+        self.speed_multiplier = 3
         self.explosions: List[Explosion] = []
         self.texts: List[TextShootObject] = []
-        self.new_missile_timer = 1
+        self.new_missile_timer = 200
         self.new_jet_timer = random.randint(450, 1200)
 
         self.lock = None
         self.start_ticks = pygame.time.get_ticks()
-        self.milliseconds_left = 600000
         self.game_running = True
         self.you_lose = None
         self.you_win = None
+        self.wpm = None
+        self.letters_typed = 0
+        self.letters_missed = 0
 
         self.restart_game_text = TextObject(
             (600, 600),
@@ -37,6 +41,8 @@ class Game(Scene):
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
             font_size=60
         )
+        self.wpm_text = None
+        self.accuracy_text = None
 
         # Background image
         background_path = Paths.levels / random.choice(["level_bg.png", "level_bg_2.png"])
@@ -57,7 +63,7 @@ class Game(Scene):
         self.you_win_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_win.ogg"))
 
         # Some random NPCs
-        number_of_npcs = 5
+        number_of_npcs = 7
 
         npc_slots = [
             (123, 550),
@@ -118,10 +124,16 @@ class Game(Scene):
 
                     # If the user hit the right key, lock the word
                     if result == TextShootState.SUCCESS:
+                        self.letters_typed += 1
                         self.gunshot.play()
                         self.lock = text
+
+                        # Move the locked element to the end so it always renders on top of everything else.
+                        self.texts.append(self.texts.pop(self.texts.index(self.lock)))
+
                         break
                     elif result == TextShootState.WORD_END:
+                        self.letters_typed += 1
                         self.gunshot.play()
                         self.texts.remove(text)
                         self.add_explosion(
@@ -135,8 +147,10 @@ class Game(Scene):
                 result = self.lock.key_input(event.key)
 
                 if result == TextShootState.SUCCESS:
+                    self.letters_typed += 1
                     self.gunshot.play()
                 elif result == TextShootState.WORD_END:
+                    self.letters_typed += 1
                     self.gunshot.play()
                     self.texts.remove(self.lock)
                     self.add_explosion(
@@ -146,6 +160,7 @@ class Game(Scene):
                     )
                     self.lock = None
                 elif result == TextShootState.WRONG_KEY:
+                    self.letters_missed += 1
                     self.wrong.play()
 
     def add_explosion(self, location: Tuple[int, int], text: str, size: int = 175, partial: bool = False):
@@ -166,6 +181,7 @@ class Game(Scene):
             self.timer = Timer(
                 (1080, 20),
                 self.start_ticks,
+                speed_multiplier=self.speed_multiplier,
                 font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
             )
             self.timer.draw()
@@ -190,7 +206,8 @@ class Game(Scene):
                     TextShootObject((0, 0), new_missile)
                 )
 
-                self.new_missile_timer = 200
+                if self.new_missile_timer == 0:
+                    self.new_missile_timer = 200
             else:
                 self.new_missile_timer -= 1
 
@@ -239,6 +256,13 @@ class Game(Scene):
 
                     self.pyjet.draw()
 
+            # Draw all the explosions
+            for explosion in self.explosions.copy():
+                explosion.draw()
+
+                if explosion.frame_count >= explosion.frame_length:
+                    self.explosions.remove(explosion)
+
             # Draw the missiles
             for text in self.texts:
                 text_x, text_y = text.location
@@ -268,13 +292,6 @@ class Game(Scene):
 
                 text.draw()
 
-            # Draw all the explosions
-            for explosion in self.explosions.copy():
-                explosion.draw()
-
-                if explosion.frame_count >= explosion.frame_length:
-                    self.explosions.remove(explosion)
-
             # Check if we've lost yet
             if not self.npcs:
                 self.game_running = False
@@ -285,9 +302,36 @@ class Game(Scene):
 
         # Game is over, and we need to draw some UI.
         else:
+            # Calculate WPM
+            if self.wpm is None:
+                total_letters = self.letters_typed + self.letters_missed
+                self.wpm = int((total_letters / 5) / self.timer.minutes_passed)
+                self.wpm_text = TextObject(
+                    (1045, 15),
+                    f"WPM: {self.wpm}",
+                    font_path=Paths.fonts / "ObelixPro-cyr.ttf",
+                    font_size=35
+                )
+
+            if self.accuracy is None:
+                total_letters = self.letters_typed + self.letters_missed
+
+                if total_letters:
+                    self.accuracy = int(
+                        100 - ((self.letters_missed / total_letters) * 100)
+                    )
+                else:
+                    self.accuracy = 0
+
+                self.accuracy_text = TextObject(
+                    (938, 70),
+                    f"Accuracy: {self.accuracy}%",
+                    font_path=Paths.fonts / "ObelixPro-cyr.ttf",
+                    font_size=35
+                )
+
             # Player has lost
             if not self.npcs:
-
                 if not self.you_lose:
                     self.you_lose = ImageObject(
                         (0, 0),
@@ -302,7 +346,6 @@ class Game(Scene):
                         450
                     ))
 
-                self.restart_game_text.draw()
                 self.you_lose.draw()
 
             # Player has won
@@ -321,5 +364,8 @@ class Game(Scene):
                         450
                     ))
 
-                self.restart_game_text.draw()
                 self.you_win.draw()
+
+            self.restart_game_text.draw()
+            self.wpm_text.draw()
+            self.accuracy_text.draw()

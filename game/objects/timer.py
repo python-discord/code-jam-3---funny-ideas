@@ -19,9 +19,11 @@ class Timer(TextObject):
             font_color: Tuple[int, int, int] = Colors.white,
     ):
 
-        # Build the timer, and have it pass at extra speed
+        # Build the timer, and modify with the multiplier
         milliseconds_passed = (pygame.time.get_ticks() * speed_multiplier) - (start_ticks * speed_multiplier)
         self.milliseconds_left = 600000 - milliseconds_passed
+        self.minutes_passed = (10.0 - ((self.milliseconds_left / 1000) / 60)) / speed_multiplier
+
         minutes = int(self.milliseconds_left / 1000 // 60)
         seconds = int(self.milliseconds_left / 1000) - (minutes * 60)
         milliseconds = int(self.milliseconds_left) - (minutes * 60000) - (seconds * 1000)
