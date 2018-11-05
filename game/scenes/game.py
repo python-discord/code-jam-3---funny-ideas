@@ -105,6 +105,11 @@ class Game(Scene):
             elif event.key == pygame.K_F6:  # YOU WIN
                 self.game_running = False
                 self.npcs = ["something"]
+            elif event.key == pygame.K_BACKSPACE and self.lock:
+                if self.lock.typed > 0:
+                    self.lock.typed -= 1
+                else:
+                    self.lock = None
 
             if not self.lock:
                 for text in self.texts:
