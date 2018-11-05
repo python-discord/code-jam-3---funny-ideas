@@ -1,12 +1,10 @@
-import random
 from typing import Tuple
 
 from game.constants import Paths, Window
-from game.objects import ImageObject
-from game.objects.bomb import BombObject
+from game.objects.enemy import EnemyObject
 
 
-class Flutterdude(ImageObject):
+class Flutterdude(EnemyObject):
     """
     Represents the Flutterdude enemy type.
     Handles its own movement to fly across the screen and flip.
@@ -43,10 +41,3 @@ class Flutterdude(ImageObject):
                 self.move(-self.speed, -swoop_speed)
 
         super().draw()
-
-    def create_bomb(self):
-        location = (
-            self.location[0] + (self.size[0] / 2),
-            self.location[1] + (self.size[1] / 2)
-        )
-        return BombObject(location, random.uniform(0.1, 0.4))
