@@ -8,7 +8,7 @@ from pygame.rect import Rect
 from pygame.surface import Surface
 
 from game import screen
-from game.constants import Colors, Paths, Words
+from game.constants import Colors, Paths, Window, Words
 from game.objects import GraphicalObject, TextObject
 
 FONT_PATH = Paths.fonts / "FiraMono-Regular.ttf"
@@ -42,6 +42,7 @@ class TextShootObject(TextObject):
         )
 
         self.parent = parent
+        self.half_width = self.surface.get_width() / 2
 
     def key_input(self, key):
         key_name = pygame.key.name(key)
@@ -102,15 +103,22 @@ class TextShootObject(TextObject):
         self.surface = surface
 
         if self.parent:
-            half_width = self.surface.get_width() / 2
-
             self.location = (
-                self.parent.location[0] - half_width + self.parent.surface.get_width() / 2,
+                self.parent.location[0] - self.half_width + self.parent.surface.get_width() / 2,
                 self.parent.location[1] - 40
             )
 
-        if self.location[0] <= 0 or self.location[0] + self.surface.get_width() >= screen.get_width():
-            self.parent.y_direction = -self.parent.y_direction
+        # Out of bounds on left side
+        if self.location[0] <= 0:
+            self.parent.y_direction = abs(self.parent.y_direction)
+            new_x = self.half_width + (self.parent.surface.get_width() / 2)
+            self.parent.move_absolute((new_x, self.parent.location[1]))
+
+        # Out of bounds on right side
+        elif self.location[0] + self.surface.get_width() >= screen.get_width():
+            self.parent.y_direction = -abs(self.parent.y_direction)
+            new_x = Window.width - (self.half_width + (self.parent.surface.get_width() / 2))
+            self.parent.move_absolute((new_x, self.parent.location[1]))
 
         super(TextObject, self).draw()
 
