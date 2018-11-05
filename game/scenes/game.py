@@ -190,7 +190,6 @@ class Game(Scene):
         """
         Flies the pyjet across the screen!
         Also handles dropping bombs from it.
-        :return:
         """
         pyjet_x = self.pyjet.location[0]
         pyjet_width = self.pyjet.size[0]
@@ -206,12 +205,12 @@ class Game(Scene):
         else:
             if not self.pyjet.bombs_dropped == len(self.pyjet.bomb_drop_locations):
                 drop_bomb_left = (
-                    pyjet_x >= self.pyjet.bomb_drop_locations[self.pyjet.bombs_dropped - 1]
+                    (pyjet_x + (pyjet_width / 2)) >= self.pyjet.bomb_drop_locations[self.pyjet.bombs_dropped]
                     and self.pyjet.left_to_right
                 )
 
                 drop_bomb_right = (
-                    pyjet_x <= self.pyjet.bomb_drop_locations[-(self.pyjet.bombs_dropped + 1)]
+                    (pyjet_x - (pyjet_width / 2)) <= self.pyjet.bomb_drop_locations[-(self.pyjet.bombs_dropped + 1)]
                     and not self.pyjet.left_to_right
                 )
 
