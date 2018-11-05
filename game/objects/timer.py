@@ -20,7 +20,7 @@ class Timer(TextObject):
     ):
 
         # Build the timer, and have it pass at extra speed
-        milliseconds_passed = (pygame.time.get_ticks() * speed_multiplier) - start_ticks
+        milliseconds_passed = (pygame.time.get_ticks() * speed_multiplier) - (start_ticks * speed_multiplier)
         self.milliseconds_left = 600000 - milliseconds_passed
         minutes = int(self.milliseconds_left / 1000 // 60)
         seconds = int(self.milliseconds_left / 1000) - (minutes * 60)

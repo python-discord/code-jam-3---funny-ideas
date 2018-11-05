@@ -57,7 +57,7 @@ class Game(Scene):
         self.you_win_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_win.ogg"))
 
         # Some random NPCs
-        number_of_npcs = random.randint(3, 7)
+        number_of_npcs = 5
         npc_slots = [
             (123, 550),
             (211, 550),
@@ -86,7 +86,7 @@ class Game(Scene):
 
         restart_game = self.restart_game_text
 
-        if restart_game.mouseover():
+        if not self.game_running and restart_game.mouseover():
             if not restart_game.highlighted:
                 restart_game.highlight()
             else:
@@ -94,7 +94,6 @@ class Game(Scene):
 
             if pygame.mouse.get_pressed()[0]:
                 self.manager.change_scene("game")
-                self.draw()
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -290,7 +289,6 @@ class Game(Scene):
 
             # Player has won
             else:
-
                 if not self.you_win:
                     self.you_win = ImageObject(
                         (0, 0),
