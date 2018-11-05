@@ -49,7 +49,7 @@ class Game(Scene):
         self.you_lose_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_lose.ogg"))
 
         # Some random NPCs
-        number_of_npcs = random.randint(3, 7)
+        number_of_npcs = 7
         npc_slots = [
             (123, 550),
             (211, 550),

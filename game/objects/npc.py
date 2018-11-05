@@ -14,6 +14,8 @@ class NPC(GraphicalObject):
     avatar onto it.
     """
 
+    avatars_in_use = []
+
     def __init__(self, location: Tuple[int, int]):
         """
         Construct a new NPC.
@@ -25,6 +27,13 @@ class NPC(GraphicalObject):
         while True:
             try:
                 avatar_num = random.randint(0, Avatars.max_number)
+
+                # Prevent duplicate avatars
+                if avatar_num in self.avatars_in_use:
+                    continue
+                else:
+                    self.avatars_in_use.append(avatar_num)
+
                 avatar_image: Surface = pygame.image.load(str(Paths.avatars / f"{avatar_num}.png"))
                 headless_image: Surface = pygame.image.load(str(Paths.headless / f"headless{avatar_num % 5}.png"))
                 avatar_image = pygame.transform.smoothscale(avatar_image, Avatars.size)
