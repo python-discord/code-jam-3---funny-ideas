@@ -148,6 +148,11 @@ class Game(Scene):
         center_x = (Window.width / 2) - (image_width / 2)
         self.game_over_screen.move_absolute((center_x, move_height))
 
+        # Play game over music
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load(str(Paths.music / "code_jam_full.ogg"))
+        pygame.mixer.music.play()
+
     def _draw_timer(self):
         """
         Draws the timer that counts down from
