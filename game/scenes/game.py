@@ -170,7 +170,19 @@ class Game(Scene):
             if npc.frames_until_turn <= 0:
                 npc.flip()
                 npc.frames_until_turn = random.randint(100, 3000)
+            if npc.frames_until_walk <= 0:
+                move = random.uniform(-3, 3)
+
+                # Gotta make sure they don't walk off the screen
+                if npc.location[0] > (Window.width - 300):
+                    move = -abs(move)
+                elif npc.location[0] < 300:
+                    move = abs(move)
+
+                npc.move(move, 0)
+                npc.frames_until_walk = random.randint(10, 150)
             else:
+                npc.frames_until_walk -= 1
                 npc.frames_until_turn -= 1
             npc.draw()
 
@@ -226,26 +238,28 @@ class Game(Scene):
         y_loc = text_y + text.surface.get_rect().bottomleft[1]
         if y_loc >= 550:
 
-            # Explode the missile!
-            self._add_explosion(
-                text.location,
-                random.choice(Explosions.ban_text),
-                size=250
-            )
-            self.texts.remove(text)
-
-            # Murder the NPC!
+            # Murder the NPC, if he's nearby.
             closest_npc = None
             for npc in self.npcs:
                 if not closest_npc:
                     closest_npc = npc
                 elif abs(npc.location[0] - text_x) < abs(closest_npc.location[0] - text_x):
                     closest_npc = npc
-            self.npcs.remove(closest_npc)
 
-            # Remove it from lock if it was locked.
-            if text == self.lock:
-                self.lock = None
+            if closest_npc and abs(closest_npc.location[0] - text_x) < 100:
+                self.npcs.remove(closest_npc)
+
+                # Explode the missile!
+                self._add_explosion(
+                    text.location,
+                    random.choice(Explosions.ban_text),
+                    size=250
+                )
+                self.texts.remove(text)
+
+                # Remove it from lock if it was locked.
+                if text == self.lock:
+                    self.lock = None
 
         text.draw()
 

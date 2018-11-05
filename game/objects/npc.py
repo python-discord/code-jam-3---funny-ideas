@@ -44,6 +44,7 @@ class NPC(GraphicalObject):
 
         # Turn around after x frames
         self.frames_until_turn = random.randint(100, 500)
+        self.frames_until_walk = random.randint(10, 150)
 
         size = (
             headless_image.get_width() + 20,
