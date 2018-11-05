@@ -19,7 +19,9 @@ class Game(Scene):
     def __init__(self, manager):
         super().__init__(manager)
 
+        self.game_over_screen = None
         self.accuracy = None
+        self.timer = None
         self.speed_multiplier = 3
         self.explosions: List[Explosion] = []
         self.texts: List[TextShootObject] = []
@@ -29,8 +31,6 @@ class Game(Scene):
         self.lock = None
         self.start_ticks = pygame.time.get_ticks()
         self.game_running = True
-        self.you_lose = None
-        self.you_win = None
         self.wpm = None
         self.letters_typed = 0
         self.letters_missed = 0
@@ -41,6 +41,10 @@ class Game(Scene):
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
             font_size=60
         )
+        self.restart_game_text.move_absolute((
+            (Window.width / 2) - (self.restart_game_text.size[0] / 2),
+            450
+        ))
         self.wpm_text = None
         self.accuracy_text = None
 
@@ -89,7 +93,183 @@ class Game(Scene):
 
         self.pyjet = None
 
+    def _build_game_over_screen(self):
+        """
+        Builds a screen that can be displayed
+        when the game is over, showing WINNER
+        or YOU LOSE graphics, score, a retry
+        button and playing sfx.
+        """
+
+        # Calculate WPM
+        total_letters = self.letters_typed + self.letters_missed
+        self.wpm = int((total_letters / 5) / self.timer.minutes_passed)
+        self.wpm_text = TextObject(
+            (1045, 15),
+            f"WPM: {self.wpm}",
+            font_path=Paths.fonts / "ObelixPro-cyr.ttf",
+            font_size=35
+        )
+
+        # Calculate accuracy
+        total_letters = self.letters_typed + self.letters_missed
+
+        if total_letters:
+            self.accuracy = int(
+                100 - ((self.letters_missed / total_letters) * 100)
+            )
+        else:
+            self.accuracy = 0
+
+        self.accuracy_text = TextObject(
+            (938, 70),
+            f"Accuracy: {self.accuracy}%",
+            font_path=Paths.fonts / "ObelixPro-cyr.ttf",
+            font_size=35
+        )
+
+        # Display the right images and play SFX
+        if not self.npcs:
+            self.game_over_screen = ImageObject(
+                (0, 0),
+                Paths.ui / "you_lose.png"
+            )
+            move_height = 220
+            self.you_lose_sfx.play()
+        else:
+            self.game_over_screen = ImageObject(
+                (0, 0),
+                Paths.ui / "winner.png"
+            )
+            move_height = 100
+            self.you_win_sfx.play()
+
+        image_width = self.game_over_screen.size[0]
+        center_x = (Window.width / 2) - (image_width / 2)
+        self.game_over_screen.move_absolute((center_x, move_height))
+
+    def _draw_timer(self):
+        """
+        Draws the timer that counts down from
+        ten minutes in the top right corner
+        """
+        self.timer = Timer(
+            (1080, 20),
+            self.start_ticks,
+            speed_multiplier=self.speed_multiplier,
+            font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
+        )
+        self.timer.draw()
+
+    def _draw_npcs(self):
+        """
+        Draws all the NPCs to
+        the play area.
+        """
+        for npc in self.npcs:
+            if npc.frames_until_turn <= 0:
+                npc.flip()
+                npc.frames_until_turn = random.randint(100, 3000)
+            else:
+                npc.frames_until_turn -= 1
+            npc.draw()
+
+    def _fly_pyjet(self):
+        """
+        Flies the pyjet across the screen!
+        Also handles dropping bombs from it.
+        :return:
+        """
+        pyjet_x = self.pyjet.location[0]
+        pyjet_width = self.pyjet.size[0]
+        off_screen = (
+                (pyjet_x + pyjet_width) <= 0
+                and not self.pyjet.left_to_right
+                or pyjet_x >= Window.width
+                and self.pyjet.left_to_right
+        )
+
+        if off_screen:
+            self.pyjet = None
+        else:
+            if not self.pyjet.bombs_dropped == len(self.pyjet.bomb_drop_locations):
+                drop_bomb_left = (
+                        pyjet_x >= self.pyjet.bomb_drop_locations[self.pyjet.bombs_dropped - 1]
+                        and self.pyjet.left_to_right
+                )
+
+                drop_bomb_right = (
+                        pyjet_x <= self.pyjet.bomb_drop_locations[-(self.pyjet.bombs_dropped + 1)]
+                        and not self.pyjet.left_to_right
+                )
+
+                if drop_bomb_left or drop_bomb_right:
+                    new_missile = self.pyjet.create_bomb(random.uniform(0.6, 1.2))
+
+                    self.texts.append(
+                        TextShootObject((0, 0), new_missile)
+                    )
+
+                    self.pyjet.bombs_dropped += 1
+
+            self.pyjet.draw()
+
+    def _draw_missiles(self, text):
+        """
+        Draws all the missiles that are
+        currently in play, and explodes
+        them and murders NPCs if they
+        go too low.
+        """
+
+        text_x, text_y = text.location
+        y_loc = text_y + text.surface.get_rect().bottomleft[1]
+        if y_loc >= 550:
+
+            # Explode the missile!
+            self._add_explosion(
+                text.location,
+                random.choice(Explosions.ban_text),
+                size=250
+            )
+            self.texts.remove(text)
+
+            # Murder the NPC!
+            closest_npc = None
+            for npc in self.npcs:
+                if not closest_npc:
+                    closest_npc = npc
+                elif abs(npc.location[0] - text_x) < abs(closest_npc.location[0] - text_x):
+                    closest_npc = npc
+            self.npcs.remove(closest_npc)
+
+            # Remove it from lock if it was locked.
+            if text == self.lock:
+                self.lock = None
+
+        text.draw()
+
+    def _add_explosion(self, location: Tuple[int, int], text: str, size: int = 175):
+        """
+        Adds an explosion with the provided text.
+
+        Optionally takes a size argument to determine
+        what size the graphics should scale to.
+        """
+        explosion = Explosion(
+            location,
+            Paths.fonts / "ObelixPro-Cry-cyr.ttf",
+            text,
+            size,
+        )
+
+        self.explosions.append(explosion)
+
     def handle_events(self, event):
+        """
+        Handles all game input events,
+        such as mouse movement and keypresses.
+        """
 
         restart_game = self.restart_game_text
 
@@ -136,7 +316,7 @@ class Game(Scene):
                         self.letters_typed += 1
                         self.gunshot.play()
                         self.texts.remove(text)
-                        self.add_explosion(
+                        self._add_explosion(
                             text.location,
                             random.choice(Explosions.destroy_text),
                             size=125
@@ -153,7 +333,7 @@ class Game(Scene):
                     self.letters_typed += 1
                     self.gunshot.play()
                     self.texts.remove(self.lock)
-                    self.add_explosion(
+                    self._add_explosion(
                         self.lock.location,
                         random.choice(Explosions.destroy_text),
                         size=125
@@ -163,39 +343,15 @@ class Game(Scene):
                     self.letters_missed += 1
                     self.wrong.play()
 
-    def add_explosion(self, location: Tuple[int, int], text: str, size: int = 175, partial: bool = False):
-        explosion = Explosion(
-            location,
-            Paths.fonts / "ObelixPro-Cry-cyr.ttf",
-            text,
-            size,
-        )
-
-        self.explosions.append(explosion)
-
     def draw(self):
+        """
+        Draws everything to the screen.
+        """
         self.background.draw()
 
         if self.game_running:
-            # Draw the timer
-            self.timer = Timer(
-                (1080, 20),
-                self.start_ticks,
-                speed_multiplier=self.speed_multiplier,
-                font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
-            )
-            self.timer.draw()
-
-            # Draw those pesky NPCs
-            for npc in self.npcs:
-                if npc.frames_until_turn <= 0:
-                    npc.flip()
-                    npc.frames_until_turn = random.randint(100, 3000)
-                else:
-                    npc.frames_until_turn -= 1
-                npc.draw()
-
-            # Draw the flutterdude
+            self._draw_timer()
+            self._draw_npcs()
             self.flutterdude.draw()
 
             # Create new flutterdude missiles periodically
@@ -222,39 +378,7 @@ class Game(Scene):
 
             # Fly the jet! Rocket maaan!
             if self.pyjet:
-                pyjet_x = self.pyjet.location[0]
-                pyjet_width = self.pyjet.size[0]
-                off_screen = (
-                    (pyjet_x + pyjet_width) <= 0
-                    and not self.pyjet.left_to_right
-                    or pyjet_x >= Window.width
-                    and self.pyjet.left_to_right
-                )
-
-                if off_screen:
-                    self.pyjet = None
-                else:
-                    if not self.pyjet.bombs_dropped == len(self.pyjet.bomb_drop_locations):
-                        drop_bomb_left = (
-                            pyjet_x >= self.pyjet.bomb_drop_locations[self.pyjet.bombs_dropped - 1]
-                            and self.pyjet.left_to_right
-                        )
-
-                        drop_bomb_right = (
-                            pyjet_x <= self.pyjet.bomb_drop_locations[-(self.pyjet.bombs_dropped + 1)]
-                            and not self.pyjet.left_to_right
-                        )
-
-                        if drop_bomb_left or drop_bomb_right:
-                            new_missile = self.pyjet.create_bomb(random.uniform(0.6, 1.2))
-
-                            self.texts.append(
-                                TextShootObject((0, 0), new_missile)
-                            )
-
-                            self.pyjet.bombs_dropped += 1
-
-                    self.pyjet.draw()
+                self._fly_pyjet()
 
             # Draw all the explosions
             for explosion in self.explosions.copy():
@@ -265,32 +389,7 @@ class Game(Scene):
 
             # Draw the missiles
             for text in self.texts:
-                text_x, text_y = text.location
-                y_loc = text_y + text.surface.get_rect().bottomleft[1]
-                if y_loc >= 550:
-
-                    # Explode the missile!
-                    self.add_explosion(
-                        text.location,
-                        random.choice(Explosions.ban_text),
-                        size=250
-                    )
-                    self.texts.remove(text)
-
-                    # Murder the NPC!
-                    closest_npc = None
-                    for npc in self.npcs:
-                        if not closest_npc:
-                            closest_npc = npc
-                        elif abs(npc.location[0] - text_x) < abs(closest_npc.location[0] - text_x):
-                            closest_npc = npc
-                    self.npcs.remove(closest_npc)
-
-                    # Remove it from lock if it was locked.
-                    if text == self.lock:
-                        self.lock = None
-
-                text.draw()
+                self._draw_missiles(text)
 
             # Check if we've lost yet
             if not self.npcs:
@@ -302,70 +401,10 @@ class Game(Scene):
 
         # Game is over, and we need to draw some UI.
         else:
-            # Calculate WPM
-            if self.wpm is None:
-                total_letters = self.letters_typed + self.letters_missed
-                self.wpm = int((total_letters / 5) / self.timer.minutes_passed)
-                self.wpm_text = TextObject(
-                    (1045, 15),
-                    f"WPM: {self.wpm}",
-                    font_path=Paths.fonts / "ObelixPro-cyr.ttf",
-                    font_size=35
-                )
+            if not self.game_over_screen:
+                self._build_game_over_screen()
 
-            if self.accuracy is None:
-                total_letters = self.letters_typed + self.letters_missed
-
-                if total_letters:
-                    self.accuracy = int(
-                        100 - ((self.letters_missed / total_letters) * 100)
-                    )
-                else:
-                    self.accuracy = 0
-
-                self.accuracy_text = TextObject(
-                    (938, 70),
-                    f"Accuracy: {self.accuracy}%",
-                    font_path=Paths.fonts / "ObelixPro-cyr.ttf",
-                    font_size=35
-                )
-
-            # Player has lost
-            if not self.npcs:
-                if not self.you_lose:
-                    self.you_lose = ImageObject(
-                        (0, 0),
-                        Paths.ui / "you_lose.png"
-                    )
-                    image_width = self.you_lose.size[0]
-                    center_x = (Window.width / 2) - (image_width / 2)
-                    self.you_lose.move_absolute((center_x, 220))
-                    self.you_lose_sfx.play()
-                    self.restart_game_text.move_absolute((
-                        (Window.width / 2) - (self.restart_game_text. size[0] / 2),
-                        450
-                    ))
-
-                self.you_lose.draw()
-
-            # Player has won
-            else:
-                if not self.you_win:
-                    self.you_win = ImageObject(
-                        (0, 0),
-                        Paths.ui / "winner.png"
-                    )
-                    image_width = self.you_win.size[0]
-                    center_x = (Window.width / 2) - (image_width / 2)
-                    self.you_win.move_absolute((center_x, 100))
-                    self.you_win_sfx.play()
-                    self.restart_game_text.move_absolute((
-                        (Window.width / 2) - (self.restart_game_text.size[0] / 2),
-                        450
-                    ))
-
-                self.you_win.draw()
-
+            self.game_over_screen.draw()
             self.restart_game_text.draw()
             self.wpm_text.draw()
             self.accuracy_text.draw()
