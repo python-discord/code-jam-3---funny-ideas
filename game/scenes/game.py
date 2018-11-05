@@ -4,7 +4,7 @@ from typing import List, Tuple
 import pygame
 
 from game.constants import Explosions, Paths, Window
-from game.objects import Explosion, ImageObject, TextShootObject, Timer
+from game.objects import Explosion, ImageObject, TextShootObject, Timer, TextObject
 from game.objects.bomb import BombObject
 from game.objects.npc import NPC
 from game.objects.text_shoot import TextShootState
@@ -43,6 +43,7 @@ class Game(Scene):
         self.gunshot = pygame.mixer.Sound(str(Paths.sfx / "gunshot.ogg"))
         self.wrong = pygame.mixer.Sound(str(Paths.sfx / "wrong_letter.ogg"))
         self.you_lose_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_lose.ogg"))
+        self.you_win_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_win.ogg"))
 
         # Some random NPCs
         number_of_npcs = random.randint(3, 7)
@@ -114,12 +115,12 @@ class Game(Scene):
 
         if self.game_running:
             # Draw the timer
-            timer = Timer(
+            self.timer = Timer(
                 (1080, 20),
                 self.start_ticks,
                 font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
             )
-            timer.draw()
+            self.timer.draw()
 
             # Draw those pesky NPCs
             for npc in self.npcs:
@@ -180,6 +181,11 @@ class Game(Scene):
             if not self.npcs:
                 self.game_running = False
 
+            # Check if we've won (timer finished)
+            if self.timer.milliseconds_left <= 0:
+                self.game_running = False
+                print('meme')
+
         # Game is over, and we need to draw some UI.
         else:
             # Player has lost
@@ -195,4 +201,34 @@ class Game(Scene):
                     self.you_lose.move_absolute((center_x, 250))
                     self.you_lose_sfx.play()
 
+                    self.start_game_text = TextObject(
+                        (600, 600),
+                        "Restart game",
+                        font_path=Paths.fonts / "NANDA.TTF",
+                        font_size=60,
+                    )
+
+                self.start_game_text.draw()
                 self.you_lose.draw()
+
+            # Player has won
+            else:
+
+                if not self.you_win:
+                    self.you_win = ImageObject(
+                        (0, 0),
+                        Paths.ui / "winner.png"
+                    )
+                    image_width = self.you_win.size[0]
+                    center_x = (Window.width / 2) - (image_width / 2)
+                    self.you_win.move_absolute((center_x, 250))
+                    self.you_win_sfx.play()
+
+                    self.start_game_text = TextObject(
+                        (600, 600),
+                        "Restart game",
+                        font_path=Paths.fonts / "NANDA.TTF",
+                        font_size=60,
+                    )
+                self.start_game_text.draw()
+                self.you_win.draw()
