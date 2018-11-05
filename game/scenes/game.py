@@ -31,6 +31,13 @@ class Game(Scene):
         self.you_lose = None
         self.you_win = None
 
+        self.restart_game_text = TextObject(
+            (600, 600),
+            "Restart game",
+            font_path=Paths.fonts / "NANDA.TTF",
+            font_size=60
+        )
+
         # Background image
         background_path = Paths.levels / random.choice(["level_bg.png", "level_bg_2.png"])
 
@@ -76,6 +83,19 @@ class Game(Scene):
         self.pyjet = None
 
     def handle_events(self, event):
+
+        restart_game = self.restart_game_text
+
+        if restart_game.mouseover():
+            if not restart_game.highlighted:
+                restart_game.highlight()
+            else:
+                restart_game.remove_highlight()
+
+            if pygame.mouse.get_pressed()[0]:
+                self.manager.change_scene("game")
+                self.draw()
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.manager.change_scene("main_menu")
@@ -249,7 +269,6 @@ class Game(Scene):
             # Check if we've won (timer finished)
             if self.timer.milliseconds_left <= 0:
                 self.game_running = False
-                print('meme')
 
         # Game is over, and we need to draw some UI.
         else:
@@ -266,14 +285,7 @@ class Game(Scene):
                     self.you_lose.move_absolute((center_x, 250))
                     self.you_lose_sfx.play()
 
-                    self.start_game_text = TextObject(
-                        (600, 600),
-                        "Restart game",
-                        font_path=Paths.fonts / "NANDA.TTF",
-                        font_size=60,
-                    )
-
-                self.start_game_text.draw()
+                self.restart_game_text.draw()
                 self.you_lose.draw()
 
             # Player has won
@@ -289,11 +301,5 @@ class Game(Scene):
                     self.you_win.move_absolute((center_x, 250))
                     self.you_win_sfx.play()
 
-                    self.start_game_text = TextObject(
-                        (600, 600),
-                        "Restart game",
-                        font_path=Paths.fonts / "NANDA.TTF",
-                        font_size=60,
-                    )
-                self.start_game_text.draw()
+                self.restart_game_text.draw()
                 self.you_win.draw()
