@@ -4,7 +4,7 @@ from typing import List, Tuple
 import pygame
 
 from game.constants import Explosions, Paths, Window
-from game.objects import Explosion, ImageObject, TextShootObject, Timer
+from game.objects import Explosion, ImageObject, TextObject, TextShootObject, Timer
 from game.objects.flutterdude import Flutterdude
 from game.objects.npc import NPC
 from game.objects.pyjet import PyJet
@@ -31,6 +31,13 @@ class Game(Scene):
         self.you_lose = None
         self.you_win = None
 
+        self.restart_game_text = TextObject(
+            (600, 600),
+            "Restart game",
+            font_path=Paths.fonts / "ObelixPro-cyr.ttf",
+            font_size=60
+        )
+
         # Background image
         background_path = Paths.levels / random.choice(["level_bg.png", "level_bg_2.png"])
 
@@ -47,9 +54,11 @@ class Game(Scene):
         self.gunshot.set_volume(0.4)
         self.wrong = pygame.mixer.Sound(str(Paths.sfx / "wrong_letter.ogg"))
         self.you_lose_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_lose.ogg"))
+        self.you_win_sfx = pygame.mixer.Sound(str(Paths.sfx / "you_win.ogg"))
 
         # Some random NPCs
-        number_of_npcs = 7
+        number_of_npcs = 5
+
         npc_slots = [
             (123, 550),
             (211, 550),
@@ -75,9 +84,34 @@ class Game(Scene):
         self.pyjet = None
 
     def handle_events(self, event):
+
+        restart_game = self.restart_game_text
+
+        if not self.game_running and restart_game.mouseover():
+            if not restart_game.highlighted:
+                restart_game.highlight()
+
+            if pygame.mouse.get_pressed()[0]:
+                self.manager.change_scene("game")
+
+        elif not self.game_running and not restart_game.mouseover():
+            restart_game.remove_highlight()
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.manager.change_scene("main_menu")
+            elif event.key == pygame.K_F5:  # YOU LOSE
+                self.game_running = False
+                self.npcs = []
+            elif event.key == pygame.K_F6:  # YOU WIN
+                self.game_running = False
+                self.npcs = ["something"]
+            elif event.key == pygame.K_BACKSPACE and self.lock:
+                if self.lock.typed > 0:
+                    self.lock.typed -= 1
+                else:
+                    self.lock = None
+
             if not self.lock:
                 for text in self.texts:
                     result = text.key_input(event.key)
@@ -129,12 +163,12 @@ class Game(Scene):
 
         if self.game_running:
             # Draw the timer
-            timer = Timer(
+            self.timer = Timer(
                 (1080, 20),
                 self.start_ticks,
                 font_path=Paths.fonts / "ObelixPro-Cry-cyr.ttf"
             )
-            timer.draw()
+            self.timer.draw()
 
             # Draw those pesky NPCs
             for npc in self.npcs:
@@ -245,6 +279,10 @@ class Game(Scene):
             if not self.npcs:
                 self.game_running = False
 
+            # Check if we've won (timer finished)
+            if self.timer.milliseconds_left <= 0:
+                self.game_running = False
+
         # Game is over, and we need to draw some UI.
         else:
             # Player has lost
@@ -257,7 +295,31 @@ class Game(Scene):
                     )
                     image_width = self.you_lose.size[0]
                     center_x = (Window.width / 2) - (image_width / 2)
-                    self.you_lose.move_absolute((center_x, 250))
+                    self.you_lose.move_absolute((center_x, 220))
                     self.you_lose_sfx.play()
+                    self.restart_game_text.move_absolute((
+                        (Window.width / 2) - (self.restart_game_text. size[0] / 2),
+                        450
+                    ))
 
+                self.restart_game_text.draw()
                 self.you_lose.draw()
+
+            # Player has won
+            else:
+                if not self.you_win:
+                    self.you_win = ImageObject(
+                        (0, 0),
+                        Paths.ui / "winner.png"
+                    )
+                    image_width = self.you_win.size[0]
+                    center_x = (Window.width / 2) - (image_width / 2)
+                    self.you_win.move_absolute((center_x, 100))
+                    self.you_win_sfx.play()
+                    self.restart_game_text.move_absolute((
+                        (Window.width / 2) - (self.restart_game_text.size[0] / 2),
+                        450
+                    ))
+
+                self.restart_game_text.draw()
+                self.you_win.draw()
