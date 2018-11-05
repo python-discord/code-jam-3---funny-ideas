@@ -34,7 +34,7 @@ class Game(Scene):
         self.restart_game_text = TextObject(
             (600, 600),
             "Restart game",
-            font_path=Paths.fonts / "NANDA.TTF",
+            font_path=Paths.fonts / "ObelixPro-cyr.ttf",
             font_size=60
         )
 
@@ -89,15 +89,23 @@ class Game(Scene):
         if not self.game_running and restart_game.mouseover():
             if not restart_game.highlighted:
                 restart_game.highlight()
-            else:
-                restart_game.remove_highlight()
 
             if pygame.mouse.get_pressed()[0]:
                 self.manager.change_scene("game")
 
+        elif not self.game_running and not restart_game.mouseover():
+            restart_game.remove_highlight()
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.manager.change_scene("main_menu")
+            elif event.key == pygame.K_F5:  # YOU LOSE
+                self.game_running = False
+                self.npcs = []
+            elif event.key == pygame.K_F6:  # YOU WIN
+                self.game_running = False
+                self.npcs = ["something"]
+
             if not self.lock:
                 for text in self.texts:
                     result = text.key_input(event.key)
@@ -281,8 +289,12 @@ class Game(Scene):
                     )
                     image_width = self.you_lose.size[0]
                     center_x = (Window.width / 2) - (image_width / 2)
-                    self.you_lose.move_absolute((center_x, 250))
+                    self.you_lose.move_absolute((center_x, 220))
                     self.you_lose_sfx.play()
+                    self.restart_game_text.move_absolute((
+                        (Window.width / 2) - (self.restart_game_text. size[0] / 2),
+                        450
+                    ))
 
                 self.restart_game_text.draw()
                 self.you_lose.draw()
@@ -296,8 +308,12 @@ class Game(Scene):
                     )
                     image_width = self.you_win.size[0]
                     center_x = (Window.width / 2) - (image_width / 2)
-                    self.you_win.move_absolute((center_x, 250))
+                    self.you_win.move_absolute((center_x, 100))
                     self.you_win_sfx.play()
+                    self.restart_game_text.move_absolute((
+                        (Window.width / 2) - (self.restart_game_text.size[0] / 2),
+                        450
+                    ))
 
                 self.restart_game_text.draw()
                 self.you_win.draw()
