@@ -29,6 +29,7 @@ class SceneManager:
 
         print(self.scenes)
         self.active = self.scenes.get("pydis")(self)
+        self.previous_scene = None
         self.current_music_filename = None
 
     def change_scene(self, scene: str):
@@ -44,6 +45,7 @@ class SceneManager:
 
         print(f"trying to load {scene}")
 
+        self.previous_scene = self.active
         self.active.teardown()
         new_scene = self.scenes.get(scene)
 

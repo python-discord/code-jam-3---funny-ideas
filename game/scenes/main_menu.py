@@ -82,8 +82,15 @@ class MainMenu(Scene):
             font_size=60,
         )
 
-        self.quit_text = TextObject(
+        self.high_scores_text = TextObject(
             (90, 560),
+            "High scores",
+            font_path = Paths.fonts / "NANDA.TTF",
+            font_size = 60,
+        )
+
+        self.quit_text = TextObject(
+            (90, 640),
             "Quit game",
             font_path=Paths.fonts / "NANDA.TTF",
             font_size=60,
@@ -91,14 +98,16 @@ class MainMenu(Scene):
 
         self.menu_items = {
             "start": self.start_game_text,
-            "how to play": self.how_to_play_text,
+            "how_to_play": self.how_to_play_text,
+            "high_scores": self.high_scores_text,
             "quit": self.quit_text,
             "close": self.close_how_to_play,
         }
 
         # SFX
-        self.sound = pygame.mixer.Sound(str(Paths.sfx / "megalomaniac.ogg"))
-        self.sound.play()
+        if self.manager.previous_scene.name == "jetbrains":
+            self.sound = pygame.mixer.Sound(str(Paths.sfx / "megalomaniac.ogg"))
+            self.sound.play()
 
         # Music
         self.manager.play_music("code_jam_loop.ogg", loop=True)
@@ -126,11 +135,13 @@ class MainMenu(Scene):
 
                     # Start game
                     elif name == "start":
-                        self.manager.change_scene("high_score")
-                        # self.manager.change_scene("game")
+                        self.manager.change_scene("game")
 
-                    # Settings
-                    elif name == "how to play":
+                    elif name == "high_scores":
+                        self.manager.change_scene("high_score")
+
+                    # How to play
+                    elif name == "how_to_play":
                         self.how_to_play_open = True
 
                     # Close "How to play" menu
@@ -156,6 +167,7 @@ class MainMenu(Scene):
             # Draw the menu
             self.start_game_text.draw()
             self.how_to_play_text.draw()
+            self.high_scores_text.draw()
             self.quit_text.draw()
         else:
             self.how_to_play.draw()

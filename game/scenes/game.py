@@ -36,14 +36,24 @@ class Game(Scene):
         self.letters_missed = 0
 
         self.restart_game_text = TextObject(
-            (600, 600),
-            "Restart game",
+            (0, 0),
+            "Play again",
+            font_path=Paths.fonts / "ObelixPro-cyr.ttf",
+            font_size=60
+        )
+        self.high_scores_text = TextObject(
+            (0, 0),
+            "High scores",
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
             font_size=60
         )
         self.restart_game_text.move_absolute((
             (Window.width / 2) - (self.restart_game_text.size[0] / 2),
             450
+        ))
+        self.high_scores_text.move_absolute((
+            (Window.width / 2) - (self.high_scores_text.size[0] / 2),
+            550
         ))
         self.wpm_text = None
         self.accuracy_text = None
@@ -288,15 +298,19 @@ class Game(Scene):
 
         restart_game = self.restart_game_text
 
-        if not self.game_running and restart_game.mouseover():
-            if not restart_game.highlighted:
-                restart_game.highlight()
+        if not self.game_running:
+            for button in (self.restart_game_text, self.high_scores_text):
+                if button.mouseover():
+                    if not button.highlighted:
+                        button.highlight()
 
-            if pygame.mouse.get_pressed()[0]:
-                self.manager.change_scene("game")
+                    if pygame.mouse.get_pressed()[0] and button.word == "High scores":
+                        self.manager.change_scene("high_score")
+                    elif pygame.mouse.get_pressed()[0] and button.word == "Play again":
+                        self.manager.change_scene("game")
 
-        elif not self.game_running and not restart_game.mouseover():
-            restart_game.remove_highlight()
+                elif not self.game_running and not button.mouseover():
+                    button.remove_highlight()
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -421,5 +435,6 @@ class Game(Scene):
 
             self.game_over_screen.draw()
             self.restart_game_text.draw()
+            self.high_scores_text.draw()
             self.wpm_text.draw()
             self.accuracy_text.draw()
