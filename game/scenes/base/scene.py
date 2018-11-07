@@ -28,5 +28,3 @@ class Scene:
 
         if self.sound:
             self.sound.stop()
-
-        pygame.mixer.music.stop()

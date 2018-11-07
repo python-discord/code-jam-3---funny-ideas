@@ -56,8 +56,7 @@ class Game(Scene):
         )
 
         # Music
-        pygame.mixer.music.load(str(Paths.music / "pskov_loop.ogg"))
-        pygame.mixer.music.play(-1)
+        self.manager.play_music("pskov_loop.ogg", loop=True)
 
         # SFX
         self.gunshot = pygame.mixer.Sound(str(Paths.sfx / "gunshot.ogg"))
@@ -149,9 +148,7 @@ class Game(Scene):
         self.game_over_screen.move_absolute((center_x, move_height))
 
         # Play game over music
-        pygame.mixer.music.stop()
-        pygame.mixer.music.load(str(Paths.music / "code_jam_full.ogg"))
-        pygame.mixer.music.play()
+        self.manager.play_music("code_jam_full.ogg")
 
     def _draw_timer(self):
         """

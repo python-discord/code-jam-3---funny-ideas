@@ -5,6 +5,7 @@ import pygame
 
 import game.scenes
 import game.scenes.splash_screens
+from game.constants import Paths
 
 
 class SceneManager:
@@ -25,7 +26,10 @@ class SceneManager:
         self.scenes = {
             scene.name: scene for scene in scenes
         }
+
+        print(self.scenes)
         self.active = self.scenes.get("pydis")(self)
+        self.current_music_filename = None
 
     def change_scene(self, scene: str):
         """
@@ -38,14 +42,31 @@ class SceneManager:
                       as a snek_case string.
         """
 
+        print(f"trying to load {scene}")
+
         self.active.teardown()
         new_scene = self.scenes.get(scene)
 
         if new_scene:
             self.active = new_scene(self)
 
-    def run(self):
+    def play_music(self, filename, loop=False):
+        """
+        Starts playing music, but only if it's not already playing.
+        """
 
+        if loop:
+            loop = -1
+        else:
+            loop = 1
+
+        if filename != self.current_music_filename:
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load(str(Paths.music / filename))
+            pygame.mixer.music.play(loop)
+            self.current_music_filename = filename
+
+    def run(self):
         # run the game loop
         while True:
             for event in pygame.event.get():

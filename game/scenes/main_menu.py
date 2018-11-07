@@ -101,8 +101,7 @@ class MainMenu(Scene):
         self.sound.play()
 
         # Music
-        pygame.mixer.music.load(str(Paths.music / "code_jam_loop.ogg"))
-        pygame.mixer.music.play(-1)
+        self.manager.play_music("code_jam_loop.ogg", loop=True)
 
     def handle_events(self, event):
         for name, item in self.menu_items.items():
@@ -127,7 +126,8 @@ class MainMenu(Scene):
 
                     # Start game
                     elif name == "start":
-                        self.manager.change_scene("game")
+                        self.manager.change_scene("high_score")
+                        # self.manager.change_scene("game")
 
                     # Settings
                     elif name == "how to play":
