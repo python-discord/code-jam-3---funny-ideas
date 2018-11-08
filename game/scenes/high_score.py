@@ -1,8 +1,9 @@
 import sys
 
 import pygame
+import requests
 
-from game.constants import Paths
+from game.constants import Paths, URLs
 from game.objects import TextObject, ImageObject
 from game.scenes.base.scene import Scene
 
@@ -34,6 +35,8 @@ class HighScore(Scene):
         )
 
         # Get the scores
+        r = requests.get(URLs.scores_api)
+        print(r.json())
 
         # Render them!
         self.start_game_text = TextObject(

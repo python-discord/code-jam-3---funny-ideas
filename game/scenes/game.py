@@ -29,8 +29,8 @@ class Game(Scene):
         self.new_jet_timer = random.randint(450, 1200)
 
         self.lock = None
-        self.start_ticks = pygame.time.get_ticks()
-        self.game_running = True
+        self.start_ticks = None
+        self.game_running = False
         self.wpm = None
         self.letters_typed = 0
         self.letters_missed = 0
@@ -47,6 +47,12 @@ class Game(Scene):
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
             font_size=60
         )
+        self.enter_name_text = TextObject(
+            (0, 0),
+            "Please enter your name",
+            font_path=Paths.fonts / "ObelixPro-cyr.ttf",
+            font_size=50
+        )
         self.restart_game_text.move_absolute((
             (Window.width / 2) - (self.restart_game_text.size[0] / 2),
             450
@@ -54,6 +60,11 @@ class Game(Scene):
         self.high_scores_text.move_absolute((
             (Window.width / 2) - (self.high_scores_text.size[0] / 2),
             550
+        ))
+
+        self.enter_name_text.move_absolute((
+            (Window.width / 2) - (self.enter_name_text.size[0] / 2),
+            200
         ))
         self.wpm_text = None
         self.accuracy_text = None
@@ -65,8 +76,10 @@ class Game(Scene):
             (0, 0), background_path,
         )
 
-        # Music
-        self.manager.play_music("pskov_loop.ogg", loop=True)
+        # The overlay to use when asking the user for their name.
+        self.name_background = ImageObject(
+            (0, 0), Paths.ui / "high_scores.png"
+        )
 
         # SFX
         self.gunshot = pygame.mixer.Sound(str(Paths.sfx / "gunshot.ogg"))
@@ -290,6 +303,13 @@ class Game(Scene):
 
         self.explosions.append(explosion)
 
+    def _commit_score_to_api(self):
+        """
+        Commits the users score to the
+        database via the Megalomaniac API.
+        """
+        pass
+
     def handle_events(self, event):
         """
         Handles all game input events,
@@ -378,7 +398,20 @@ class Game(Scene):
         """
         self.background.draw()
 
-        if self.game_running:
+        # Get the user to enter their name for high scores
+        if self.manager.player_name is None:
+            self.name_background.draw()
+            self.enter_your_name.draw()
+            some_condition = True
+
+
+            # Start the game!
+            if some_condition:
+                self.start_ticks = pygame.time.get_ticks()
+                self.manager.play_music("pskov_loop.ogg", loop=True)
+                self.game_running = True
+
+        elif self.game_running:
             self._draw_timer()
             self._draw_npcs()
             self.flutterdude.draw()
@@ -432,6 +465,7 @@ class Game(Scene):
         else:
             if not self.game_over_screen:
                 self._build_game_over_screen()
+                self._commit_score_to_api()
 
             self.game_over_screen.draw()
             self.restart_game_text.draw()

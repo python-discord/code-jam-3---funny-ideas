@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 pygame = "==1.9.4"
+requests = "*"
 
 [dev-packages]
 "flake8" = "*"

@@ -2,6 +2,12 @@ from pathlib import Path
 from typing import NamedTuple
 
 
+class URLs(NamedTuple):
+    api = "https://megalomaniac.seph.club/api"
+    scores_api = f"{api}/scores"
+    add_score_api = f"{api}/add_score"
+
+
 class Colors(NamedTuple):
     black = (0, 0, 0)
     blue = (0, 0, 255)
