@@ -36,7 +36,7 @@ class JetBrainsSplash(Splash):
         self.image.move_absolute(center)
 
         # What scene should be loaded after this finishes?
-        self.next_scene = "main_menu"
+        self.next_scene = "enter_name"
 
         # JetBrains SFX
         self.sound = pygame.mixer.Sound(str(Paths.sfx / "jetbrains.ogg"))

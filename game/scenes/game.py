@@ -27,13 +27,14 @@ class Game(Scene):
         self.texts: List[TextShootObject] = []
         self.new_missile_timer = 200
         self.new_jet_timer = random.randint(450, 1200)
+        self.start_ticks = pygame.time.get_ticks()
+        self.game_running = True
 
         self.lock = None
-        self.start_ticks = None
-        self.game_running = False
         self.wpm = None
         self.letters_typed = 0
         self.letters_missed = 0
+        self.pyjet = None
 
         self.restart_game_text = TextObject(
             (0, 0),
@@ -47,12 +48,6 @@ class Game(Scene):
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
             font_size=60
         )
-        self.enter_name_text = TextObject(
-            (0, 0),
-            "Please enter your name",
-            font_path=Paths.fonts / "ObelixPro-cyr.ttf",
-            font_size=50
-        )
         self.restart_game_text.move_absolute((
             (Window.width / 2) - (self.restart_game_text.size[0] / 2),
             450
@@ -60,11 +55,6 @@ class Game(Scene):
         self.high_scores_text.move_absolute((
             (Window.width / 2) - (self.high_scores_text.size[0] / 2),
             550
-        ))
-
-        self.enter_name_text.move_absolute((
-            (Window.width / 2) - (self.enter_name_text.size[0] / 2),
-            200
         ))
         self.wpm_text = None
         self.accuracy_text = None
@@ -74,11 +64,6 @@ class Game(Scene):
 
         self.background = ImageObject(
             (0, 0), background_path,
-        )
-
-        # The overlay to use when asking the user for their name.
-        self.name_background = ImageObject(
-            (0, 0), Paths.ui / "high_scores.png"
         )
 
         # SFX
@@ -113,7 +98,8 @@ class Game(Scene):
             1.5
         )
 
-        self.pyjet = None
+        # Play some music
+        self.manager.play_music("pskov_loop.ogg", loop=True)
 
     def _build_game_over_screen(self):
         """
@@ -310,85 +296,86 @@ class Game(Scene):
         """
         pass
 
-    def handle_events(self, event):
+    def handle_events(self, events):
         """
         Handles all game input events,
         such as mouse movement and keypresses.
         """
 
-        if not self.game_running:
-            for button in (self.restart_game_text, self.high_scores_text):
-                if button.mouseover():
-                    if not button.highlighted:
-                        button.highlight()
+        for event in events:
+            if not self.game_running:
+                for button in (self.restart_game_text, self.high_scores_text):
+                    if button.mouseover():
+                        if not button.highlighted:
+                            button.highlight()
 
-                    if pygame.mouse.get_pressed()[0] and button.word == "High scores":
-                        self.manager.change_scene("high_score")
-                    elif pygame.mouse.get_pressed()[0] and button.word == "Play again":
-                        self.manager.change_scene("game")
+                        if pygame.mouse.get_pressed()[0] and button.word == "High scores":
+                            self.manager.change_scene("high_score")
+                        elif pygame.mouse.get_pressed()[0] and button.word == "Play again":
+                            self.manager.change_scene("game")
 
-                elif not self.game_running and not button.mouseover():
-                    button.remove_highlight()
+                    elif not self.game_running and not button.mouseover():
+                        button.remove_highlight()
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                self.manager.change_scene("main_menu")
-            elif event.key == pygame.K_F5:  # YOU LOSE
-                self.game_running = False
-                self.npcs = []
-            elif event.key == pygame.K_F6:  # YOU WIN
-                self.game_running = False
-                self.npcs = ["something"]
-            elif event.key == pygame.K_BACKSPACE and self.lock:
-                if self.lock.typed > 0:
-                    self.lock.typed -= 1
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.manager.change_scene("main_menu")
+                elif event.key == pygame.K_F5:  # YOU LOSE
+                    self.game_running = False
+                    self.npcs = []
+                elif event.key == pygame.K_F6:  # YOU WIN
+                    self.game_running = False
+                    self.npcs = ["something"]
+                elif event.key == pygame.K_BACKSPACE and self.lock:
+                    if self.lock.typed > 0:
+                        self.lock.typed -= 1
+                    else:
+                        self.lock = None
+
+                if not self.lock:
+                    for text in self.texts:
+                        result = text.key_input(event.key)
+
+                        # If the user hit the right key, lock the word
+                        if result == TextShootState.SUCCESS:
+                            self.letters_typed += 1
+                            self.gunshot.play()
+                            self.lock = text
+
+                            # Move the locked element to the end so it always renders on top of everything else.
+                            self.texts.append(self.texts.pop(self.texts.index(self.lock)))
+
+                            break
+                        elif result == TextShootState.WORD_END:
+                            self.letters_typed += 1
+                            self.gunshot.play()
+                            self.texts.remove(text)
+                            self._add_explosion(
+                                text.location,
+                                random.choice(Explosions.destroy_text),
+                                size=125
+                            )
+                            self.lock = None
+
                 else:
-                    self.lock = None
+                    result = self.lock.key_input(event.key)
 
-            if not self.lock:
-                for text in self.texts:
-                    result = text.key_input(event.key)
-
-                    # If the user hit the right key, lock the word
                     if result == TextShootState.SUCCESS:
                         self.letters_typed += 1
                         self.gunshot.play()
-                        self.lock = text
-
-                        # Move the locked element to the end so it always renders on top of everything else.
-                        self.texts.append(self.texts.pop(self.texts.index(self.lock)))
-
-                        break
                     elif result == TextShootState.WORD_END:
                         self.letters_typed += 1
                         self.gunshot.play()
-                        self.texts.remove(text)
+                        self.texts.remove(self.lock)
                         self._add_explosion(
-                            text.location,
+                            self.lock.location,
                             random.choice(Explosions.destroy_text),
                             size=125
                         )
                         self.lock = None
-
-            else:
-                result = self.lock.key_input(event.key)
-
-                if result == TextShootState.SUCCESS:
-                    self.letters_typed += 1
-                    self.gunshot.play()
-                elif result == TextShootState.WORD_END:
-                    self.letters_typed += 1
-                    self.gunshot.play()
-                    self.texts.remove(self.lock)
-                    self._add_explosion(
-                        self.lock.location,
-                        random.choice(Explosions.destroy_text),
-                        size=125
-                    )
-                    self.lock = None
-                elif result == TextShootState.WRONG_KEY:
-                    self.letters_missed += 1
-                    self.wrong.play()
+                    elif result == TextShootState.WRONG_KEY:
+                        self.letters_missed += 1
+                        self.wrong.play()
 
     def draw(self):
         """
@@ -396,19 +383,7 @@ class Game(Scene):
         """
         self.background.draw()
 
-        # Get the user to enter their name for high scores
-        if self.manager.player_name is None:
-            self.name_background.draw()
-            self.enter_name_text.draw()
-            some_condition = False
-
-            # Start the game!
-            if some_condition:
-                self.start_ticks = pygame.time.get_ticks()
-                self.manager.play_music("pskov_loop.ogg", loop=True)
-                self.game_running = True
-
-        elif self.game_running:
+        if self.game_running:
             self._draw_timer()
             self._draw_npcs()
             self.flutterdude.draw()

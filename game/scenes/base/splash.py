@@ -28,23 +28,24 @@ class Splash(Scene):
         self.fade = pygame.Surface((Window.width, Window.height))
         self.fade.fill(Colors.black)
 
-    def handle_events(self, event):
+    def handle_events(self, events):
         """
         Allow the user to skip the
         splash screen by pressing
         ESC, space or enter.
         """
-        skip = (
-            event.type == pygame.KEYDOWN
-            and event.key in (
-                pygame.K_ESCAPE,
-                pygame.K_SPACE,
-                pygame.K_RETURN,
+        for event in events:
+            skip = (
+                event.type == pygame.KEYDOWN
+                and event.key in (
+                    pygame.K_ESCAPE,
+                    pygame.K_SPACE,
+                    pygame.K_RETURN,
+                )
             )
-        )
 
-        if skip:
-            self.manager.change_scene(self.next_scene)
+            if skip:
+                self.manager.change_scene(self.next_scene)
 
     def draw(self):
         """

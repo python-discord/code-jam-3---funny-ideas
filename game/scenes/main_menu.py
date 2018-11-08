@@ -112,47 +112,49 @@ class MainMenu(Scene):
         # Music
         self.manager.play_music("code_jam_loop.ogg", loop=True)
 
-    def handle_events(self, event):
-        for name, item in self.menu_items.items():
+    def handle_events(self, events):
 
-            if event.type == pygame.KEYDOWN:
-                if self.how_to_play_open and event.key == pygame.K_ESCAPE:
-                    self.how_to_play_open = False
-                    break
+        for event in events:
+            for name, item in self.menu_items.items():
 
-            if item.mouseover():
-                if not item.highlighted:
-                    item.highlight()
-
-                    if not name == "close":
-                        item.move(15, 0)
-
-                if pygame.mouse.get_pressed()[0]:  # Left mouse button pressed
-                    # Quit button
-                    if name == "quit":
-                        pygame.quit()
-                        sys.exit()
-
-                    # Start game
-                    elif name == "start":
-                        self.manager.change_scene("game")
-
-                    elif name == "high_scores":
-                        self.manager.change_scene("high_score")
-
-                    # How to play
-                    elif name == "how_to_play":
-                        self.how_to_play_open = True
-
-                    # Close "How to play" menu
-                    elif name == "close":
+                if event.type == pygame.KEYDOWN:
+                    if self.how_to_play_open and event.key == pygame.K_ESCAPE:
                         self.how_to_play_open = False
-            else:
-                if item.highlighted:
-                    item.remove_highlight()
+                        break
 
-                    if not name == "close":
-                        item.move(-15, 0)
+                if item.mouseover():
+                    if not item.highlighted:
+                        item.highlight()
+
+                        if not name == "close":
+                            item.move(15, 0)
+
+                    if pygame.mouse.get_pressed()[0]:  # Left mouse button pressed
+                        # Quit button
+                        if name == "quit":
+                            pygame.quit()
+                            sys.exit()
+
+                        # Start game
+                        elif name == "start":
+                            self.manager.change_scene("game")
+
+                        elif name == "high_scores":
+                            self.manager.change_scene("high_score")
+
+                        # How to play
+                        elif name == "how_to_play":
+                            self.how_to_play_open = True
+
+                        # Close "How to play" menu
+                        elif name == "close":
+                            self.how_to_play_open = False
+                else:
+                    if item.highlighted:
+                        item.remove_highlight()
+
+                        if not name == "close":
+                            item.move(-15, 0)
 
     def draw(self):
         # Draw the background and the logo

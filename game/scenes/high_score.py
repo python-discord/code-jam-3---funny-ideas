@@ -48,12 +48,13 @@ class HighScore(Scene):
         if not self.manager.previous_scene.name == "main_menu":
             self.manager.play_music("code_jam_full.ogg")
 
-    def handle_events(self, event):
+    def handle_events(self, events):
+        for event in events:
 
-        # Escape goes back to the main menu
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                self.manager.change_scene("main_menu")
+            # Escape goes back to the main menu
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.manager.change_scene("main_menu")
 
     def draw(self):
         # Draw the background and the logo

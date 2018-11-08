@@ -32,6 +32,7 @@ class SceneManager:
         self.previous_scene = None
         self.current_music_filename = None
         self.player_name = None
+        self.clock = pygame.time.Clock()
 
     def change_scene(self, scene: str):
         """
@@ -72,12 +73,13 @@ class SceneManager:
     def run(self):
         # run the game loop
         while True:
-            for event in pygame.event.get():
+            events = pygame.event.get()
+            for event in events:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
-                self.active.handle_events(event)
-
+            self.active.handle_events(events)
             self.active.draw()
             pygame.display.update()
+            self.clock.tick(30)

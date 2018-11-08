@@ -17,6 +17,8 @@ class TextObject(GraphicalObject):
             font_size: int = 32,
             font_color: Tuple[int, int, int] = (255, 255, 255),
             highlight_color: Tuple[int, int, int] = (255, 200, 0),
+            disabled_color: Tuple[int, int, int] = (100, 100, 100),
+            disabled: bool = False,
     ):
         self.font_path = font_path if font_path else Paths.fonts / "FiraMono-Regular.ttf"
         self.word = word
@@ -24,8 +26,13 @@ class TextObject(GraphicalObject):
         self.font_color = font_color
         self.highlight_color = highlight_color
         self.highlighted = False
+        self.disabled = disabled
+        self.disabled_color = disabled_color
 
-        surface = self.font.render(self.word, True, font_color)
+        if self.disabled:
+            surface = self.font.render(self.word, True, disabled_color)
+        else:
+            surface = self.font.render(self.word, True, font_color)
 
         super().__init__(location, surface)
 
@@ -37,7 +44,8 @@ class TextObject(GraphicalObject):
         """
 
         if not self.highlighted:
-            self.surface = self.font.render(self.word, True, self.highlight_color)
+            if not self.disabled:
+                self.surface = self.font.render(self.word, True, self.highlight_color)
             self.highlighted = True
 
     def remove_highlight(self):
@@ -47,5 +55,29 @@ class TextObject(GraphicalObject):
         """
 
         if self.highlighted:
-            self.surface = self.font.render(self.word, True, self.font_color)
+            if not self.disabled:
+                self.surface = self.font.render(self.word, True, self.font_color)
             self.highlighted = False
+
+    def disable(self):
+        """
+        Changes the font color to
+        a grayed out one.
+        """
+        if not self.disabled:
+            self.disabled = True
+            self.surface = self.font.render(self.word, True, self.disabled_color)
+
+    def enable(self):
+        """
+        Returns the font color
+        to normal.
+        """
+        if self.disabled:
+            self.disabled = False
+
+            # Do we highlight or not?
+            if self.highlighted:
+                self.surface = self.font.render(self.word, True, self.highlight_color)
+            else:
+                self.surface = self.font.render(self.word, True, self.font_color)
