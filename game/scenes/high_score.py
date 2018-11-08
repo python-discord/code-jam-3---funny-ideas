@@ -3,7 +3,7 @@ from operator import itemgetter
 import pygame
 import requests
 
-from game.constants import Paths, URLs
+from game.constants import Paths, URLs, Window
 from game.objects import ImageObject, TextObject
 from game.scenes.base.scene import Scene
 
@@ -34,15 +34,48 @@ class HighScore(Scene):
             Paths.ui / "high_scores.png"
         )
 
+        # High scores headline
+        self.headline_text = TextObject(
+            (0, 0),
+            "High scores",
+            font_path=Paths.fonts / "ObelixPro-cyr.ttf",
+            font_size=50
+        )
+        self.headline_text.move_absolute((
+            (Window.width / 2) - (self.headline_text.size[0] / 2),
+            75
+        ))
+
+        # The icons that explain what each row is for
+        self.score_headline = TextObject(
+            (600, 200),
+            "Score"
+        )
+        self.wpm_headline = TextObject(
+            (850, 200),
+            "WPM"
+        )
+        self.accuracy_headline = TextObject(
+            (1000, 200),
+            "Accuracy"
+        )
+
+        # Add the close button
+        self.close_button = ImageObject(
+            (1120, 90),
+            Paths.ui / "close_window.png"
+        )
+
         # Score attributes
-        self.high_score_y = 120
+        self.high_score_y = 270
+        self.high_score_number = 1
         self.high_score_texts = []
 
         # Get the scores
         r = requests.get(URLs.scores_api)
         high_scorers = r.json()
 
-        # Sort by score and limit to 10
+        # Sort by score and limit to 5
         high_scorers = [
             {
                 "username": name,
@@ -51,31 +84,50 @@ class HighScore(Scene):
                 "score": data['score']
             } for name, data in high_scorers.items()
         ]
-        high_scorers = sorted(high_scorers, key=itemgetter('score'))[:10]
+        high_scorers = sorted(high_scorers, key=itemgetter('score'))[:5]
 
         # Build the score text objects
         for score in high_scorers:
+            points = score['score']
             name = score['username']
             accuracy = score['accuracy']
             wpm = score['wpm']
 
-            self.high_score_texts.append(
+            self.high_score_texts.append((
                 TextObject(
-                    (250, self.high_score_y),
-                    f"{name}: wpm: {wpm}  accuracy: {accuracy}%",
+                    (180, self.high_score_y),
+                    f"{self.high_score_number}.",
                     font_path=Paths.fonts / "NANDA.TTF",
                     font_size=60
-                )
-            )
+                ),
+                TextObject(
+                    (230, self.high_score_y),
+                    name,
+                    font_path=Paths.fonts / "NANDA.TTF",
+                    font_size=60
+                ),
+                TextObject(
+                    (600, self.high_score_y),
+                    str(points),
+                    font_path=Paths.fonts / "NANDA.TTF",
+                    font_size=60
+                ),
+                TextObject(
+                    (850, self.high_score_y),
+                    str(wpm),
+                    font_path=Paths.fonts / "NANDA.TTF",
+                    font_size=60
+                ),
+                TextObject(
+                    (1000, self.high_score_y),
+                    f"{accuracy}%",
+                    font_path=Paths.fonts / "NANDA.TTF",
+                    font_size=60
+                ),
+            ))
             self.high_score_y += 80
-            self.high_score_texts.append(
-                TextObject(
-                    (250, self.high_score_y),
-                    f"{name}: wpm: {wpm}  accuracy: {accuracy}%",
-                    font_path=Paths.fonts / "NANDA.TTF",
-                    font_size=60
-                )
-            )
+            self.high_score_number += 1
+
         self.start_game_text = TextObject(
             (90, 400),
             "Start game",
@@ -84,7 +136,7 @@ class HighScore(Scene):
         )
 
         # Music
-        if not self.manager.previous_scene.name == "main_menu":
+        if self.manager.previous_scene and not self.manager.previous_scene.name == "main_menu":
             self.manager.play_music("code_jam_full.ogg")
 
     def handle_events(self, events):
@@ -95,10 +147,28 @@ class HighScore(Scene):
                 if event.key == pygame.K_ESCAPE:
                     self.manager.change_scene("main_menu")
 
+        if self.close_button.mouseover():
+            if not self.close_button.highlighted:
+                self.close_button.highlight()
+
+            if pygame.mouse.get_pressed()[0]:
+                self.manager.change_scene("main_menu")
+        else:
+            if self.close_button.highlighted:
+                self.close_button.remove_highlight()
+
     def draw(self):
         # Draw the background and the logo
         self.background.draw()
         self.high_scores.draw()
+        self.headline_text.draw()
+        self.close_button.draw()
+
+        # Draw the icons
+        self.wpm_headline.draw()
+        self.score_headline.draw()
+        self.accuracy_headline.draw()
 
         for score in self.high_score_texts:
-            score.draw()
+            for attribute in score:
+                attribute.draw()

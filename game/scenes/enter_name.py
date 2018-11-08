@@ -87,6 +87,9 @@ class EnterName(Scene):
             disabled=True
         )
 
+        # Music
+        self.manager.play_music("code_jam_loop.ogg", loop=True)
+
     def handle_events(self, events):
         return_event = self.input_field.update(events)
 

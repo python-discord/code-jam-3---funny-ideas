@@ -27,9 +27,8 @@ class SceneManager:
             scene.name: scene for scene in scenes
         }
 
-        print(self.scenes)
-        self.active = self.scenes.get("pydis")(self)
         self.previous_scene = None
+        self.active = self.scenes.get("pydis")(self)
         self.current_music_filename = None
         self.player_name = None
         self.clock = pygame.time.Clock()
@@ -44,8 +43,6 @@ class SceneManager:
         :param scene: The name of the scene provided
                       as a snek_case string.
         """
-
-        print(f"trying to load {scene}")
 
         self.previous_scene = self.active
         self.active.teardown()
