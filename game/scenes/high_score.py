@@ -1,10 +1,8 @@
-import sys
-
 import pygame
 import requests
 
 from game.constants import Paths, URLs
-from game.objects import TextObject, ImageObject
+from game.objects import ImageObject, TextObject
 from game.scenes.base.scene import Scene
 
 

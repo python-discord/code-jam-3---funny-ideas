@@ -316,8 +316,6 @@ class Game(Scene):
         such as mouse movement and keypresses.
         """
 
-        restart_game = self.restart_game_text
-
         if not self.game_running:
             for button in (self.restart_game_text, self.high_scores_text):
                 if button.mouseover():
@@ -401,9 +399,8 @@ class Game(Scene):
         # Get the user to enter their name for high scores
         if self.manager.player_name is None:
             self.name_background.draw()
-            self.enter_your_name.draw()
-            some_condition = True
-
+            self.enter_name_text.draw()
+            some_condition = False
 
             # Start the game!
             if some_condition:
