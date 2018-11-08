@@ -2,8 +2,9 @@ import random
 from typing import List, Tuple
 
 import pygame
+import requests
 
-from game.constants import Explosions, Paths, Window
+from game.constants import Explosions, Paths, Window, URLs
 from game.objects import Explosion, ImageObject, TextObject, TextShootObject, Timer
 from game.objects.flutterdude import Flutterdude
 from game.objects.npc import NPC
@@ -19,6 +20,7 @@ class Game(Scene):
     def __init__(self, manager):
         super().__init__(manager)
 
+        self.max_bombs = 8
         self.game_over_screen = None
         self.accuracy = None
         self.timer = None
@@ -294,7 +296,14 @@ class Game(Scene):
         Commits the users score to the
         database via the Megalomaniac API.
         """
-        pass
+        requests.post(
+            URLs.add_score_api,
+            json={
+                "username": self.manager.player_name,
+                "wpm": self.wpm,
+                "accuracy": self.accuracy,
+            }
+        )
 
     def handle_events(self, events):
         """
@@ -323,9 +332,13 @@ class Game(Scene):
                 elif event.key == pygame.K_F5:  # YOU LOSE
                     self.game_running = False
                     self.npcs = []
+
+                    self._commit_score_to_api()
                 elif event.key == pygame.K_F6:  # YOU WIN
                     self.game_running = False
                     self.npcs = ["something"]
+                    self._build_game_over_screen()
+                    self._commit_score_to_api()
                 elif event.key == pygame.K_BACKSPACE and self.lock:
                     if self.lock.typed > 0:
                         self.lock.typed -= 1
@@ -389,7 +402,7 @@ class Game(Scene):
             self.flutterdude.draw()
 
             # Create new flutterdude missiles periodically
-            if self.new_missile_timer == 0 or not self.texts:
+            if (self.new_missile_timer == 0 and len(self.texts) < self.max_bombs) or not self.texts:
                 new_missile = self.flutterdude.create_bomb(random.uniform(0.1, 0.4))
 
                 self.texts.append(
@@ -432,12 +445,12 @@ class Game(Scene):
             # Check if we've won (timer finished)
             if self.timer.milliseconds_left <= 0:
                 self.game_running = False
+                self._commit_score_to_api()
 
         # Game is over, and we need to draw some UI.
         else:
             if not self.game_over_screen:
                 self._build_game_over_screen()
-                self._commit_score_to_api()
 
             self.game_over_screen.draw()
             self.restart_game_text.draw()

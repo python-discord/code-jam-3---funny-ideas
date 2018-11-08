@@ -88,7 +88,7 @@ class EnterName(Scene):
         )
 
     def handle_events(self, events):
-        self.input_field.update(events)
+        return_event = self.input_field.update(events)
 
         # Check whether to enable the button
         if len(self.input_field.get_text()) >= 1 and self.ok_button.disabled:
@@ -98,6 +98,11 @@ class EnterName(Scene):
 
         # Handle the OK button
         if not self.ok_button.disabled:
+
+            # User hit RETURN and has typed something
+            if return_event:
+                self.manager.player_name = self.input_field.get_text()
+                self.manager.change_scene("main_menu")
 
             # Handle mouse interaction with OK button
             if self.ok_button.mouseover():

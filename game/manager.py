@@ -82,4 +82,4 @@ class SceneManager:
             self.active.handle_events(events)
             self.active.draw()
             pygame.display.update()
-            self.clock.tick(30)
+            self.clock.tick(90)

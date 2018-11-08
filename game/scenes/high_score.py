@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 import pygame
 import requests
 
@@ -32,11 +34,48 @@ class HighScore(Scene):
             Paths.ui / "high_scores.png"
         )
 
+        # Score attributes
+        self.high_score_y = 120
+        self.high_score_texts = []
+
         # Get the scores
         r = requests.get(URLs.scores_api)
-        print(r.json())
+        high_scorers = r.json()
 
-        # Render them!
+        # Sort by score and limit to 10
+        high_scorers = [
+            {
+                "username": name,
+                "wpm": data['wpm'],
+                "accuracy": data['accuracy'],
+                "score": data['score']
+            } for name, data in high_scorers.items()
+        ]
+        high_scorers = sorted(high_scorers, key=itemgetter('score'))[:10]
+
+        # Build the score text objects
+        for score in high_scorers:
+            name = score['username']
+            accuracy = score['accuracy']
+            wpm = score['wpm']
+
+            self.high_score_texts.append(
+                TextObject(
+                    (250, self.high_score_y),
+                    f"{name}: wpm: {wpm}  accuracy: {accuracy}%",
+                    font_path=Paths.fonts / "NANDA.TTF",
+                    font_size=60
+                )
+            )
+            self.high_score_y += 80
+            self.high_score_texts.append(
+                TextObject(
+                    (250, self.high_score_y),
+                    f"{name}: wpm: {wpm}  accuracy: {accuracy}%",
+                    font_path=Paths.fonts / "NANDA.TTF",
+                    font_size=60
+                )
+            )
         self.start_game_text = TextObject(
             (90, 400),
             "Start game",
@@ -60,3 +99,6 @@ class HighScore(Scene):
         # Draw the background and the logo
         self.background.draw()
         self.high_scores.draw()
+
+        for score in self.high_score_texts:
+            score.draw()
