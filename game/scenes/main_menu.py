@@ -23,6 +23,7 @@ class MainMenu(Scene):
 
         # Main game logo
         self.logo = ImageObject(
+            self,
             (0, 0),
             Paths.ui / "logo.png",
         )
@@ -38,22 +39,26 @@ class MainMenu(Scene):
         # How to play
         self.how_to_play_open = False
         self.how_to_play = ImageObject(
+            self,
             (0, 0),
             Paths.ui / "how_to_play.png"
         )
         self.close_how_to_play = ImageObject(
+            self,
             (1060, 300),
             Paths.ui / "close_window.png"
         )
 
         # Background image
         self.background = ImageObject(
+            self,
             (0, 0),
             Paths.ui / "background.png",
         )
 
         # Floaty dudes
         self.flutterdude = FloatingObject(
+            self,
             (980, 260),
             Paths.enemies / "flutterdude.png",
             float_range=(260, 280),
@@ -61,6 +66,7 @@ class MainMenu(Scene):
         )
 
         self.brainmon = FloatingObject(
+            self,
             (900, 400),
             Paths.enemies / "brainmon_firing.png",
             float_range=(390, 400),
@@ -69,6 +75,7 @@ class MainMenu(Scene):
 
         # Text init
         self.start_game_text = TextObject(
+            self,
             (90, 400),
             "Start game",
             font_path=Paths.fonts / "NANDA.TTF",
@@ -76,6 +83,7 @@ class MainMenu(Scene):
         )
 
         self.how_to_play_text = TextObject(
+            self,
             (90, 480),
             "How to play",
             font_path=Paths.fonts / "NANDA.TTF",
@@ -83,6 +91,7 @@ class MainMenu(Scene):
         )
 
         self.high_scores_text = TextObject(
+            self,
             (90, 560),
             "High scores",
             font_path = Paths.fonts / "NANDA.TTF",
@@ -90,6 +99,7 @@ class MainMenu(Scene):
         )
 
         self.quit_text = TextObject(
+            self,
             (90, 640),
             "Quit game",
             font_path=Paths.fonts / "NANDA.TTF",

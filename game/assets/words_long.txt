@@ -3,15 +3,15 @@ a grain of morality
 agree license agreement
 alexa next
 alexa play despacito
-aperture's fancy new system
+apertures fancy new system
 as a fellow abdul
 bad at computers
 banned from discord
 bbqdude solves the human condition
 bbqdude solves the hungries
 big lemon is watching you
-bisk's disk shop
-bisk's diskette recovery service
+bisks disk shop
+bisks diskette recovery service
 blockchains can do anything
 blurple is not a color
 brown creamy goat cheese
@@ -21,7 +21,7 @@ caveglasses for seeing in the near
 change the colours back
 channels start at one
 church of sega genesis ii
-commander pike's playground
+commander pikes playground
 cookin with bisk
 cooking with alexa
 cooking with alexa next
@@ -30,20 +30,20 @@ death by spinning chair
 delete database pydis
 dinoman is all in your head
 do you want a banana
-don't meme me bro
+dont meme me bro
 double speed
 doubles are illegal in norway
 doubly linked channel
 drop table off topic
 drr drr drr
 ed is the standard text editor
-eivl's lack of food racism
+eivls lack of food racism
 encouraging emojis
 error too polite
 eval is safe right
 every day is bbq day
 expect syntax error
-for channel in off-topic
+for channel in off topic
 forknife gamer club
 from future import braces
 g stands for germany era
@@ -57,24 +57,24 @@ g stands for grinning
 g stands for groot
 g stands for legend
 gdude and the chocolate meltery
-gdude's 16-hour nap
-gdude's cloud castle
-gdude's klicky keyboard
-gdude's pony ranch
+gdudes 16 hour nap
+gdudes cloud castle
+gdudes klicky keyboard
+gdudes pony ranch
 get off my lawn
 git blame someone else
 git commit bitcoin theft
 git commit hopes and dreams
 git commit murder
-git pull off-topic
+git pull off topic
 git revert my day
 glorious staff gradient
 gnu slash linux
 god loves elephants
-goto off-topic
+goto off topic
 heart names are so loud
 hemlock needs more comments
-hemlock's morning deliveries
+hemlocks morning deliveries
 hmmmmmmmmm
 honking good ideas
 how do you type with boxing gloves on
@@ -83,7 +83,7 @@ how spanish are you
 how to melt chocolate
 i code in rockstar
 i define my bedtime
-i don't have potato now
+i dont have potato now
 i like being a burger
 i program html
 i use arch btw
@@ -98,26 +98,26 @@ insert fortnite axe
 ironic love
 is this loss
 javascript is fine
-joseph's flexible metal heart
-juan's golfing clubhouse
+josephs flexible metal heart
+juans golfing clubhouse
 keylogging alpaca
 kick ass chew bubblegum
 kick bubblegum chew ass
 kinky coding
-known's knightclub
+knowns knightclub
 late night python
 legal advice
 lemon fan fictions
 lemon is an ai
-lemon's beard grooming shop
-lemon's boutique
-lemon's lemon farm
-lemon's lemonade stand
-lord inver's death metal moshpit
-lord inver's spirit animal
-lucy's endless evening
-lucy's hair dye shop
-lucy's relationship advice
+lemons beard grooming shop
+lemons boutique
+lemons lemon farm
+lemons lemonade stand
+lord invers death metal moshpit
+lord invers spirit animal
+lucys endless evening
+lucys hair dye shop
+lucys relationship advice
 make mine a double
 meanwhile in a staff channel
 mental burgers
@@ -125,7 +125,7 @@ mike oldfield appreciation club
 mister shoot rate
 mo inheritance mo problems
 moist machine
-momo's mechanical heart
+momos mechanical heart
 money bathtub
 money for homework
 more comments please
@@ -135,7 +135,7 @@ never enough threads
 never hug a duck
 nix claims to have a heart too
 no dabbing zone
-no i don't play roblox
+no i dont play roblox
 nobody broke bot eval yet
 npm is a teapot
 panic driven development
@@ -154,8 +154,8 @@ real men use nano
 real or fake owner
 reddit scraper mailing list
 reticulated splines
-ricardo's legacy
-roofers bangin' on my house
+ricardos legacy
+roofers bangin on my house
 salty afterthoughts
 short concise llama
 shut on the computer
@@ -174,12 +174,12 @@ stuck in checkpoint
 sunglass for seeing in the far
 sunglasses at night
 sweet memes are made of these
-tell you when you're older
+tell you when youre older
 test in production
 thanks ants thants
 the g is short for
 the g is silent
-the insomniac's paradise
+the insomniacs paradise
 the killer error
 the known error
 the loon lagoon
@@ -195,20 +195,20 @@ too poor for spotify
 totally not off topic
 unironic love
 uptime 2832 days
-volcyy's phone is pretty good
+volcyys phone is pretty good
 waffles with brunost
 we updated our privacy policy
 wet hug parachute
-what's the script
+whats the script
 where did the minecraft channel go
 which channel is off topic
 white is a color
 who cares about style
 who even uses rust
 who needs windows support anyway
-why can't we have normal names
+why cant we have normal names
 why is everyone red
-why we can't have nice things
+why we cant have nice things
 widescape monitor
 working for exposure
 works on my machine
@@ -216,7 +216,7 @@ wrong channel
 yellow snow
 you are too deep
 you have strucked hercules
-your rabbit shouldn't quack
-you're tearing me apart lisa
+your rabbit shouldnt quack
+youre tearing me apart lisa
 zero width spaces
-zwack's zworking club
+zwacks zworking club

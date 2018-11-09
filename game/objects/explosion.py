@@ -16,7 +16,7 @@ class Explosion(GraphicalObject):
     Blits both graphics and text, and plays a sound effect.
     """
 
-    def __init__(self, location: Tuple[int, int], font_path, word, size: int, frame_length: int = 60):
+    def __init__(self, scene, location: Tuple[int, int], font_path, word, size: int, frame_length: int = 60):
         self.frame_length = frame_length
         self.frame_count = 0
         self.angle = 0.0
@@ -57,7 +57,7 @@ class Explosion(GraphicalObject):
             )
         )
 
-        super().__init__(location, surface)
+        super().__init__(scene, location, surface)
 
     def draw(self):
         if self.frame_count >= self.frame_length:

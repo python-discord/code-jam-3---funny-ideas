@@ -16,7 +16,7 @@ class NPC(GraphicalObject):
 
     avatars_in_use = []
 
-    def __init__(self, location: Tuple[int, int]):
+    def __init__(self, scene, location: Tuple[int, int]):
         """
         Construct a new NPC.
 
@@ -61,4 +61,4 @@ class NPC(GraphicalObject):
             )
         )
 
-        super(NPC, self).__init__(location, surface)
+        super().__init__(scene, location, surface)

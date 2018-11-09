@@ -20,12 +20,14 @@ class EnterName(Scene):
 
         # Background image
         self.background = ImageObject(
+            self,
             (0, 0),
             Paths.ui / "background.png",
         )
 
         # Box overlay
         self.enter_name_box = ImageObject(
+            self,
             (0, 0),
             Paths.ui / "enter_name_box.png"
         )
@@ -36,6 +38,7 @@ class EnterName(Scene):
 
         # Instructions
         self.please_enter_name = TextObject(
+            self,
             (0, 0),
             "Who are you?",
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
@@ -48,6 +51,7 @@ class EnterName(Scene):
 
         # InputBox
         self.input_field = TextInputObject(
+            self,
             (450, 315),
             font_path=Paths.fonts / "FiraMono-Regular.ttf",
             font_size=40,
@@ -58,6 +62,7 @@ class EnterName(Scene):
 
         # Explanation text below input
         self.explanation_line_1 = TextObject(
+            self,
             (0, 0),
             "We need this information for high scores.",
             font_path=Paths.fonts / "FiraMono-Regular.ttf",
@@ -68,6 +73,7 @@ class EnterName(Scene):
             400
         ))
         self.explanation_line_2 = TextObject(
+            self,
             (0, 0),
             "Feel free to input a nickname, or a made-up name.",
             font_path=Paths.fonts / "FiraMono-Regular.ttf",
@@ -80,6 +86,7 @@ class EnterName(Scene):
 
         # OK Button
         self.ok_button = TextObject(
+            self,
             (880, 530),
             "OK",
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",

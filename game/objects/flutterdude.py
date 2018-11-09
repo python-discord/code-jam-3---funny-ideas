@@ -10,11 +10,11 @@ class Flutterdude(EnemyObject):
     Handles its own movement to fly across the screen and flip.
     """
 
-    def __init__(self, location: Tuple[int, int], speed: float):
+    def __init__(self, scene, location: Tuple[int, int], speed: float):
         self.speed = speed
         self.facing_right = True
 
-        super().__init__(location, Paths.enemies / "flutterdude.png")
+        super().__init__(scene, location, Paths.enemies / "flutterdude.png")
 
     def draw(self):
 

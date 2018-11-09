@@ -13,7 +13,7 @@ class GraphicalObject:
     and the surface object to draw.
     """
 
-    def __init__(self, location: Tuple[int, int], surface: Surface):
+    def __init__(self, scene, location: Tuple[int, int], surface: Surface):
         """
         Construct a new game object.
 
@@ -21,6 +21,7 @@ class GraphicalObject:
         :param surface: A Surface object that can be blitted to the screen.
         """
 
+        self.scene = scene
         self.location = location
         self.surface = surface
         self.size = self.surface.get_size()
@@ -100,8 +101,8 @@ class GraphicalObject:
 
         # Now we can actually move.
         self.location = (
-            self.location[0] + horizontal,
-            self.location[1] + vertical
+            self.location[0] + (horizontal * (self.scene.manager.deltatime / 12)),
+            self.location[1] + (vertical * (self.scene.manager.deltatime / 12))
         )
 
     def move_absolute(self, location: Tuple[int, int]):

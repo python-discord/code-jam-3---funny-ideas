@@ -10,6 +10,7 @@ from game.objects import GraphicalObject
 class TextObject(GraphicalObject):
     def __init__(
             self,
+            scene,
             location: Tuple[int, int],
             word: str,
             *,
@@ -34,7 +35,7 @@ class TextObject(GraphicalObject):
         else:
             surface = self.font.render(self.word, True, font_color)
 
-        super().__init__(location, surface)
+        super().__init__(scene, location, surface)
 
     def highlight(self):
         """

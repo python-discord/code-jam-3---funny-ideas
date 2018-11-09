@@ -14,7 +14,7 @@ class ImageObject(GraphicalObject):
     Constructs a BaseObject with an image
     """
 
-    def __init__(self, location: Tuple[int, int], image_path: Union[Path, str], *, size: Tuple[int, int] = None):
+    def __init__(self, scene, location: Tuple[int, int], image_path: Union[Path, str], *, size: Tuple[int, int] = None):
         """
         Construct a new game object.
 
@@ -34,7 +34,7 @@ class ImageObject(GraphicalObject):
         self.highlight_color = Colors.yellow
         self.highlighted = False
 
-        super().__init__(location, self.image)
+        super().__init__(scene, location, self.image)
 
     def highlight(self):
         """

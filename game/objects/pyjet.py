@@ -12,9 +12,9 @@ class PyJet(EnemyObject):
     Handles its own movement to zoom across the screen.
     """
 
-    def __init__(self, left_to_right: bool):
+    def __init__(self, scene, left_to_right: bool):
 
-        super().__init__((0, 0), Paths.enemies / "pyjet.png")
+        super().__init__(scene, (0, 0), Paths.enemies / "pyjet.png")
 
         self.left_to_right = left_to_right
         self.bombs_dropped = 0

@@ -24,18 +24,21 @@ class HighScore(Scene):
 
         # Background image
         self.background = ImageObject(
+            self,
             (0, 0),
             Paths.ui / "background.png",
         )
 
         # High score overlay
         self.high_scores = ImageObject(
+            self,
             (0, 0),
             Paths.ui / "high_scores.png"
         )
 
         # High scores headline
         self.headline_text = TextObject(
+            self,
             (0, 0),
             "High scores",
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
@@ -48,20 +51,24 @@ class HighScore(Scene):
 
         # The icons that explain what each row is for
         self.score_headline = TextObject(
+            self,
             (600, 200),
             "Score"
         )
         self.wpm_headline = TextObject(
+            self,
             (850, 200),
             "WPM"
         )
         self.accuracy_headline = TextObject(
+            self,
             (1000, 200),
             "Accuracy"
         )
 
         # Add the close button
         self.close_button = ImageObject(
+            self,
             (1120, 90),
             Paths.ui / "close_window.png"
         )
@@ -95,30 +102,35 @@ class HighScore(Scene):
 
             self.high_score_texts.append((
                 TextObject(
+                    self,
                     (180, self.high_score_y),
                     f"{self.high_score_number}.",
                     font_path=Paths.fonts / "NANDA.TTF",
                     font_size=60
                 ),
                 TextObject(
+                    self,
                     (230, self.high_score_y),
                     name,
                     font_path=Paths.fonts / "NANDA.TTF",
                     font_size=60
                 ),
                 TextObject(
+                    self,
                     (600, self.high_score_y),
                     str(points),
                     font_path=Paths.fonts / "NANDA.TTF",
                     font_size=60
                 ),
                 TextObject(
+                    self,
                     (850, self.high_score_y),
                     str(wpm),
                     font_path=Paths.fonts / "NANDA.TTF",
                     font_size=60
                 ),
                 TextObject(
+                    self,
                     (1000, self.high_score_y),
                     f"{accuracy}%",
                     font_path=Paths.fonts / "NANDA.TTF",
@@ -129,6 +141,7 @@ class HighScore(Scene):
             self.high_score_number += 1
 
         self.start_game_text = TextObject(
+            self,
             (90, 400),
             "Start game",
             font_path=Paths.fonts / "NANDA.TTF",

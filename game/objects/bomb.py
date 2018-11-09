@@ -11,11 +11,11 @@ class BombObject(ImageObject):
     movement.
     """
 
-    def __init__(self, location: Tuple[int, int], speed: float):
+    def __init__(self, scene, location: Tuple[int, int], speed: float):
         self.speed = speed
         self.y_direction = random.uniform(-1.0, 1.0)
 
-        super().__init__(location, Paths.items / "kickmissile.png")
+        super().__init__(scene, location, Paths.items / "kickmissile.png")
 
     def draw(self):
         self.move(self.speed * self.y_direction, self.speed)

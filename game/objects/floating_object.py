@@ -11,6 +11,7 @@ class FloatingObject(ImageObject):
 
     def __init__(
             self,
+            scene,
             location: Tuple[int, int],
             image_path: Union[Path, str],
             float_range: Tuple[int, int],
@@ -35,7 +36,7 @@ class FloatingObject(ImageObject):
         self.float_wait = 5
         self.float_up = False
 
-        super().__init__(location, image_path, size=size)
+        super().__init__(scene, location, image_path, size=size)
 
     def draw(self):
 

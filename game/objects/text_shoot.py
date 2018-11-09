@@ -23,10 +23,9 @@ class TextShootState(Enum):
 
 
 class TextShootObject(TextObject):
-    def __init__(self, location: Tuple[int, int], parent: GraphicalObject = None, long: bool = False):
-        self.is_long = long
+    def __init__(self, scene, location: Tuple[int, int], parent: GraphicalObject = None, short: bool = False):
 
-        if long:
+        if not short and random.randint(0, 4) == 2:
             self.word = random.choice(Words.long).upper()
         else:
             self.word = random.choice(Words.single).upper()
@@ -34,6 +33,7 @@ class TextShootObject(TextObject):
         self.typed = 0
 
         super().__init__(
+            scene,
             location,
             self.word,
             font_path=FONT_PATH,
@@ -109,15 +109,14 @@ class TextShootObject(TextObject):
             )
 
         # Out of bounds on left side
-        if self.location[0] <= 0:
+        if self.location[0] <= 0 and self.parent.y_direction < 0:
             self.parent.y_direction = abs(self.parent.y_direction)
-            new_x = self.half_width + (self.parent.surface.get_width() / 2)
-            self.parent.move_absolute((new_x, self.parent.location[1]))
+            self.parent.move_absolute((self.half_width + self.parent.size[0], self.parent.location[1]))
 
         # Out of bounds on right side
-        elif self.location[0] + self.surface.get_width() >= screen.get_width():
+        elif self.location[0] + self.surface.get_width() >= screen.get_width() and self.parent.y_direction > 0:
             self.parent.y_direction = -abs(self.parent.y_direction)
-            new_x = Window.width - (self.half_width + (self.parent.surface.get_width() / 2))
+            new_x = Window.width - (self.half_width + self.parent.size[0])
             self.parent.move_absolute((new_x, self.parent.location[1]))
 
         super(TextObject, self).draw()

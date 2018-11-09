@@ -22,6 +22,7 @@ class TextInputObject:
     """
     def __init__(
             self,
+            scene,
             location,
             initial_string="",
             font_path="",
@@ -48,6 +49,7 @@ class TextInputObject:
         # Metadata
         self.location = location
         self.screen = screen
+        self.scene = scene
 
         # Text related vars:
         self.antialias = antialias
@@ -85,8 +87,6 @@ class TextInputObject:
         self.cursor_visible = True  # Switches every self.cursor_switch_ms ms
         self.cursor_switch_ms = 500  # /|\
         self.cursor_ms_counter = 0
-
-        self.clock = pygame.time.Clock()
 
     def update(self, events):
         for event in events:
@@ -148,7 +148,7 @@ class TextInputObject:
             self.surface = self.font_object.render(self.input_string, self.antialias, self.text_color)
 
             # Update self.cursor_visible
-            self.cursor_ms_counter += self.clock.get_time()
+            self.cursor_ms_counter += self.scene.manager.deltatime
             if self.cursor_ms_counter >= self.cursor_switch_ms:
                 self.cursor_ms_counter %= self.cursor_switch_ms
                 self.cursor_visible = not self.cursor_visible
@@ -160,7 +160,6 @@ class TextInputObject:
                     cursor_y_pos -= self.cursor_surface.get_width()
                 self.surface.blit(self.cursor_surface, (cursor_y_pos, 0))
 
-            self.clock.tick()
             return False
 
     def draw(self):

@@ -32,6 +32,7 @@ class SceneManager:
         self.current_music_filename = None
         self.player_name = None
         self.clock = pygame.time.Clock()
+        self.deltatime = 0
 
     def change_scene(self, scene: str):
         """
@@ -79,4 +80,4 @@ class SceneManager:
             self.active.handle_events(events)
             self.active.draw()
             pygame.display.update()
-            self.clock.tick(90)
+            self.deltatime = self.clock.tick(90)

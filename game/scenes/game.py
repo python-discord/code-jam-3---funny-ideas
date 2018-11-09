@@ -39,12 +39,14 @@ class Game(Scene):
         self.pyjet = None
 
         self.restart_game_text = TextObject(
+            self,
             (0, 0),
             "Play again",
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
             font_size=60
         )
         self.high_scores_text = TextObject(
+            self,
             (0, 0),
             "High scores",
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
@@ -65,6 +67,7 @@ class Game(Scene):
         background_path = Paths.levels / random.choice(["level_bg.png", "level_bg_2.png"])
 
         self.background = ImageObject(
+            self,
             (0, 0), background_path,
         )
 
@@ -91,11 +94,12 @@ class Game(Scene):
         self.npcs = []
         for _ in range(number_of_npcs):
             self.npcs.append(
-                NPC(npc_slots.pop(-1))
+                NPC(self, npc_slots.pop(-1))
             )
 
         # Enemies
         self.flutterdude = Flutterdude(
+            self,
             (0, 75),
             1.5
         )
@@ -115,6 +119,7 @@ class Game(Scene):
         total_letters = self.letters_typed + self.letters_missed
         self.wpm = int((total_letters / 5) / self.timer.minutes_passed)
         self.wpm_text = TextObject(
+            self,
             (1045, 15),
             f"WPM: {self.wpm}",
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
@@ -132,6 +137,7 @@ class Game(Scene):
             self.accuracy = 0
 
         self.accuracy_text = TextObject(
+            self,
             (938, 70),
             f"Accuracy: {self.accuracy}%",
             font_path=Paths.fonts / "ObelixPro-cyr.ttf",
@@ -141,6 +147,7 @@ class Game(Scene):
         # Display the right images and play SFX
         if not self.npcs:
             self.game_over_screen = ImageObject(
+                self,
                 (0, 0),
                 Paths.ui / "you_lose.png"
             )
@@ -148,6 +155,7 @@ class Game(Scene):
             self.you_lose_sfx.play()
         else:
             self.game_over_screen = ImageObject(
+                self,
                 (0, 0),
                 Paths.ui / "winner.png"
             )
@@ -167,6 +175,7 @@ class Game(Scene):
         ten minutes in the top right corner
         """
         self.timer = Timer(
+            self,
             (1080, 20),
             self.start_ticks,
             speed_multiplier=self.speed_multiplier,
@@ -231,7 +240,7 @@ class Game(Scene):
                     new_missile = self.pyjet.create_bomb(random.uniform(0.6, 1.2))
 
                     self.texts.append(
-                        TextShootObject((0, 0), new_missile)
+                        TextShootObject(self, (0, 0), new_missile, short=True)
                     )
 
                     self.pyjet.bombs_dropped += 1
@@ -248,7 +257,10 @@ class Game(Scene):
 
         text_x, text_y = text.location
         y_loc = text_y + text.surface.get_rect().bottomleft[1]
-        if y_loc >= 550:
+
+        if y_loc > Window.height:
+            return
+        elif y_loc >= 550:
 
             # Murder the NPC, if he's nearby.
             closest_npc = None
@@ -283,6 +295,7 @@ class Game(Scene):
         what size the graphics should scale to.
         """
         explosion = Explosion(
+            self,
             location,
             Paths.fonts / "ObelixPro-Cry-cyr.ttf",
             text,
@@ -406,7 +419,7 @@ class Game(Scene):
                 new_missile = self.flutterdude.create_bomb(random.uniform(0.1, 0.4))
 
                 self.texts.append(
-                    TextShootObject((0, 0), new_missile)
+                    TextShootObject(self, (0, 0), new_missile)
                 )
 
                 if self.new_missile_timer == 0:
@@ -417,6 +430,7 @@ class Game(Scene):
             # Create jet periodically
             if self.new_jet_timer == 0:
                 self.pyjet = PyJet(
+                    self,
                     left_to_right=random.choice((True, False))
                 )
                 self.new_jet_timer = random.randint(450, 1200)

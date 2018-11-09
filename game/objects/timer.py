@@ -10,6 +10,7 @@ from game.objects import TextObject
 class Timer(TextObject):
     def __init__(
             self,
+            scene,
             location: Tuple[int, int],
             start_ticks: int,
             speed_multiplier: float = 3,
@@ -32,6 +33,7 @@ class Timer(TextObject):
 
         # Make the TextObject
         super().__init__(
+            scene,
             location,
             time_display,
             font_path=font_path,

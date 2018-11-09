@@ -19,6 +19,7 @@ class PyDisSplash(Splash):
 
         # PyDis logo
         self.image = ImageObject(
+            self,
             (0, 0),
             Paths.splash / "pydis_logo.png",
         )

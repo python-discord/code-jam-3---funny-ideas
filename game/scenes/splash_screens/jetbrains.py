@@ -19,6 +19,7 @@ class JetBrainsSplash(Splash):
 
         # JetBrains logo
         self.image = ImageObject(
+            self,
             (0, 0),
             Paths.splash / "jetbrains_logo.png",
         )
