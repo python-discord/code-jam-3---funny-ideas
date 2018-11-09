@@ -1,5 +1,3 @@
-import pygame
-
 from game import screen
 from game.constants import Colors
 

@@ -1,7 +1,7 @@
 import pygame
 
-from game.constants import Paths, Window, Colors
-from game.objects import ImageObject, TextObject, TextInputObject
+from game.constants import Colors, Paths, Window
+from game.objects import ImageObject, TextInputObject, TextObject
 from game.scenes.base.scene import Scene
 
 

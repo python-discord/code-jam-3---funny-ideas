@@ -14,7 +14,7 @@ __all__ = [
     "GraphicalObject",
     "ImageObject",
     "TextObject",
-    "TextInput",
+    "TextInputObject",
     "TextShootObject",
     "Timer",
 ]
