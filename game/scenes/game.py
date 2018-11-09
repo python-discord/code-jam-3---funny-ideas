@@ -4,7 +4,7 @@ from typing import List, Tuple
 import pygame
 import requests
 
-from game.constants import Explosions, Paths, Window, URLs
+from game.constants import Explosions, Paths, URLs, Window
 from game.objects import Explosion, ImageObject, TextObject, TextShootObject, Timer
 from game.objects.flutterdude import Flutterdude
 from game.objects.npc import NPC

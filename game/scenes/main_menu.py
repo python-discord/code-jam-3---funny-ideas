@@ -94,8 +94,8 @@ class MainMenu(Scene):
             self,
             (90, 560),
             "High scores",
-            font_path = Paths.fonts / "NANDA.TTF",
-            font_size = 60,
+            font_path=Paths.fonts / "NANDA.TTF",
+            font_size=60,
         )
 
         self.quit_text = TextObject(

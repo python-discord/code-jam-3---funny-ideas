@@ -1,0 +1,24 @@
+- hosts: sephclub
+  become: yes
+  tasks:
+    - name: Pull from GitHub
+      shell: cd funny-ideas && git pull
+
+    - name: Build docker conainer
+      docker_image:
+        name: megalomaniac-web
+        tag: latest
+        path: funny-ideas/web/
+        state: present
+        force: yes
+
+    - name: Restart the container
+      docker_container:
+        name: megalomaniac-web
+        image: megalomaniac-web:latest
+        env:
+          REDIS_PWD: "{{ redis_pwd }}"
+        network_mode: host
+        recreate: yes
+        restart: yes
+        restart_policy: unless-stopped
