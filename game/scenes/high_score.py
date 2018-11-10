@@ -91,7 +91,7 @@ class HighScore(Scene):
                 "score": data['score']
             } for name, data in high_scorers.items()
         ]
-        high_scorers = sorted(high_scorers, key=itemgetter('score'))[:5]
+        high_scorers = sorted(high_scorers, key=itemgetter('score'), reverse=True)[:5]
 
         # Build the score text objects
         for score in high_scorers:
