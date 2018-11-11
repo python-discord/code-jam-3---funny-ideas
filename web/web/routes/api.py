@@ -16,7 +16,7 @@ def add_highscore():
     existing = red.hget(f"stats:{username}", "score")
 
     if existing:
-        if existing >= score:
+        if int(existing) >= score:
             return jsonify({"message": "not_changed"}), 200
 
     red.hset(f"stats:{username}", "wpm", wpm)
