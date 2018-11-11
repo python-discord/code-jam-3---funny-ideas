@@ -345,16 +345,6 @@ class Game(Scene):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.manager.change_scene("main_menu")
-                elif event.key == pygame.K_F5:  # YOU LOSE
-                    self.game_running = False
-                    self.npcs = []
-
-                    self._commit_score_to_api()
-                elif event.key == pygame.K_F6:  # YOU WIN
-                    self.game_running = False
-                    self.npcs = ["something"]
-                    self._build_game_over_screen()
-                    self._commit_score_to_api()
                 elif event.key == pygame.K_BACKSPACE and self.lock:
                     if self.lock.typed > 0:
                         self.lock.typed -= 1
