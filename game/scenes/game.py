@@ -459,7 +459,6 @@ class Game(Scene):
             # Check if we've won (timer finished)
             if self.timer.milliseconds_left <= 0:
                 self.game_running = False
-                self._commit_score_to_api()
 
         # Game is over, and we need to draw some UI.
         else:
@@ -467,6 +466,7 @@ class Game(Scene):
                 self._build_game_over_screen()
 
             self.game_over_screen.draw()
+            self._commit_score_to_api()
             self.restart_game_text.draw()
             self.high_scores_text.draw()
             self.wpm_text.draw()
