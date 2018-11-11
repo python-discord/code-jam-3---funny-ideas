@@ -31,6 +31,7 @@ class Game(Scene):
         self.new_jet_timer = random.randint(450, 1200)
         self.start_ticks = pygame.time.get_ticks()
         self.game_running = True
+        self.sent_scores = False
 
         self.lock = None
         self.wpm = None
@@ -309,14 +310,16 @@ class Game(Scene):
         Commits the users score to the
         database via the Megalomaniac API.
         """
-        requests.post(
-            URLs.add_score_api,
-            json={
-                "username": self.manager.player_name,
-                "wpm": self.wpm,
-                "accuracy": self.accuracy,
-            }
-        )
+        if not self.sent_scores:
+            requests.post(
+                URLs.add_score_api,
+                json={
+                    "username": self.manager.player_name,
+                    "wpm": self.wpm,
+                    "accuracy": self.accuracy,
+                }
+            )
+            self.sent_scores = True
 
     def handle_events(self, events):
         """
